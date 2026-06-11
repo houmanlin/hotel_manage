@@ -38,6 +38,7 @@ dependencies:
   url_launcher: ^6.3.0
   bot_toast: ^4.1.0
   calendar_date_picker2: ^3.0.0
+  dio: ^5.4.0
 
 dev_dependencies:
   flutter_test:

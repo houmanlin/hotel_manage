@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:hotel_manage/components/app_home_bar.dart';
 import 'package:hotel_manage/util/system_params.dart';
 
+import 'package:hotel_manage/api/model/store/store.dart';
+import 'package:hotel_manage/api/model/comm/response_comm.dart';
 import 'component/hotel_filter/hotel_filter.dart';
 
 class HotelListPage extends StatefulWidget {
@@ -11,8 +13,41 @@ class HotelListPage extends StatefulWidget {
 }
 
 class _HotelListPageState extends State<HotelListPage> {
+  List<Store> _storeData = [];
   String _checkInDate = '05月20日 周二';
   String _checkOutDate = '05月21日 周三';
+
+  @override
+ void initState() {
+    super.initState();
+    _getStoreData();
+  }
+
+  Future<void> _getStoreData() async {
+    // TODO: implement initState
+    ResponseComm ResponseData = await StoreApi.getStoreList(
+      StoreParams(
+        name: null,
+        code: null,
+        phone: '',
+        address: '',
+        startBusinessTime: '',
+        endBusinessTime: '',
+        status: null,
+        remark: '',
+        imageUrls: '',
+        createTime: '',
+        pageNo: 1,
+        pageSize: 100,
+      ),
+    );
+
+    print("ResponseData[data]");
+    print(ResponseData.Data);
+    // setState(() {
+    //   _storeData = ResponseData["data"]["data"]["list"];
+    // });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +93,7 @@ class _HotelListPageState extends State<HotelListPage> {
 
   Widget _buildHotelList() {
     return Column(
-      children: List.generate(5, (index) {
+      children: List.generate(_storeData.length, (index) {
         return Container(
           margin: EdgeInsets.only(bottom: 10),
           padding: EdgeInsets.all(12),
@@ -76,7 +111,7 @@ class _HotelListPageState extends State<HotelListPage> {
                   borderRadius: BorderRadius.circular(containerSmallRadian),
                 ),
                 child: Image.network(
-                  'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=100&q=80',
+                  _storeData[index].imageUrls,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -86,7 +121,7 @@ class _HotelListPageState extends State<HotelListPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '酒店名称 $index',
+                      _storeData[index].name,
                       style: TextStyle(
                         fontSize: textTitleSize,
                         fontWeight: FontWeight.bold,
@@ -94,7 +129,7 @@ class _HotelListPageState extends State<HotelListPage> {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      '地址信息',
+                      _storeData[index].address,
                       style: TextStyle(
                         fontSize: textSize,
                         color: Colors.grey[500],
@@ -104,7 +139,7 @@ class _HotelListPageState extends State<HotelListPage> {
                     Row(
                       children: [
                         Text(
-                          '¥128',
+                          _storeData[index].basePrice.toString(),
                           style: TextStyle(
                             fontSize: textTitleSize,
                             fontWeight: FontWeight.bold,
@@ -112,7 +147,7 @@ class _HotelListPageState extends State<HotelListPage> {
                           ),
                         ),
                         Text(
-                          '/晚',
+                          '起',
                           style: TextStyle(
                             fontSize: textSmallSize,
                             color: Colors.grey[500],
