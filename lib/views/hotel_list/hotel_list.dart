@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hotel_manage/api/model/comm/page_response_comm.dart';
 import 'package:hotel_manage/components/app_home_bar.dart';
 import 'package:hotel_manage/util/system_params.dart';
 
@@ -42,8 +43,16 @@ class _HotelListPageState extends State<HotelListPage> {
       ),
     );
 
-    print("ResponseData[data]");
-    print(ResponseData.Data);
+    if(ResponseData.Code == 0){
+
+      print("ResponseData[data]");
+      PageResponseComm<Store> responseData = PageResponseComm.fromJson(ResponseData.Data, Store.fromJson);
+      print(ResponseData.Data);
+
+    }else{
+      print(ResponseData.Msg);
+
+    }
     // setState(() {
     //   _storeData = ResponseData["data"]["data"]["list"];
     // });

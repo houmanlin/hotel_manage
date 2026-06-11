@@ -96,7 +96,7 @@ class HttpRequest {
     throw ArgumentError('Unsupported data type: ${data.runtimeType}');
   }
 
-  Future<ResponseComm<T>> _handleResponse<T>(Response response) async {
+  Future<ResponseComm> _handleResponse(Response response) async {
     if (response.statusCode != null &&
         response.statusCode! >= 200 &&
         response.statusCode! < 300) {

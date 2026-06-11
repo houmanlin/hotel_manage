@@ -149,7 +149,6 @@ class StoreApi {
       'hotel/store/page',
       queryParameters: queryParam.toJson(),
     );
-    print(response.Data);
     return response;
   }
 }
