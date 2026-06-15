@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hotel_manage/api/model/hotel/Hotel.dart';
+import 'package:hotel_manage/api/model/hotel/hotel.dart';
 import 'package:hotel_manage/components/hotel_card.dart';
 import 'package:hotel_manage/util/system_params.dart';
 

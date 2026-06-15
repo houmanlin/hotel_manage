@@ -193,7 +193,7 @@ class HotelFilter extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(containerSmallRadian),
+            borderRadius: BorderRadius.circular(containerCircle),
           ),
           elevation: 0,
         ),

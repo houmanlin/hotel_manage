@@ -11,7 +11,7 @@ class HttpRequest {
 
   late Dio _dio;
   String _baseUrl = 'http://192.168.1.10:48080/app-api/';
-  String? _token = '980e126b867945e3a5cbf8d3d4615285';
+  String? _token = '44ca02384acf40dca2c6ca88fc2eafb4';
 
   HttpRequest._internal() {
     _initDio();
@@ -124,18 +124,23 @@ class HttpRequest {
           error.type == DioExceptionType.sendTimeout ||
           error.type == DioExceptionType.receiveTimeout) {
         message = '请求超时';
+        statusCode = 20000;
       } else if (error.type == DioExceptionType.connectionError) {
         message = '网络连接失败';
+        statusCode = 20001;
       } else if (error.type == DioExceptionType.badResponse) {
         message = error.response?.data?['message'] ?? '请求失败';
+        statusCode = 20002;
       } else {
+        statusCode = 20003;
         message = error.message ?? '请求发生错误';
       }
     } else {
+      statusCode = 30003;
       message = '请求发生错误: $error';
     }
 
-    return ResponseComm(Code: 0, Msg: message, Data: null);
+    return ResponseComm(Code: statusCode, Msg: message, Data: null);
   }
 
   Dio get dio => _dio;

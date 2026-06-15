@@ -1,3 +1,7 @@
+import 'package:hotel_manage/api/http_request.dart';
+
+import '../comm/response_comm.dart';
+
 class HotelModel {
   final String ImageUrl;
   final String Title;
