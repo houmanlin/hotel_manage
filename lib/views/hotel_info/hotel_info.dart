@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hotel_manage/api/model/comm/response_comm.dart';
+import 'package:hotel_manage/api/model/store_room_type/store_room_type.dart';
+import 'package:hotel_manage/util/utils.dart';
 import 'package:hotel_manage/views/accommodation/accommodation_order/component/recommend/recommend.dart';
 
 import 'component/image_carousel.dart';
@@ -14,7 +17,8 @@ class HotelInfoPage extends StatefulWidget {
 
 }
 class _HotelInfoPageState extends State<HotelInfoPage> {
-
+  _storeData
+  String _storeId = "";
 
   @override
   void didChangeDependencies() {
@@ -22,7 +26,7 @@ class _HotelInfoPageState extends State<HotelInfoPage> {
     final args =
     ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     if (args != null) {
-      storeId = args['store_id'];
+      _storeId = args['store_id'];
       _getStoreData();
     }
   }
@@ -32,7 +36,7 @@ class _HotelInfoPageState extends State<HotelInfoPage> {
     ResponseComm ResponseData = await StoreRoomTypeApi.getStoreRoomTypeList(
       StoreRoomTypeParams(
         status: 1,
-        storeId: storeId,
+        storeId: _storeId,
         pageNo: 1,
         pageSize: 100,
         id: '',

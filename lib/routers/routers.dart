@@ -3,7 +3,6 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_manage/views/ai_dialog/ai_dialog.dart';
 import 'package:hotel_manage/views/book_info/book_info.dart';
-import 'package:hotel_manage/views/hotelInfo/hotel_info.dart';
 import 'package:hotel_manage/views/hotel_info/hotel_info.dart';
 import 'package:hotel_manage/views/hotel_list/hotel_list.dart';
 import 'package:hotel_manage/views/login/login.dart';
