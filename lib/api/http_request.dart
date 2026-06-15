@@ -83,6 +83,21 @@ class HttpRequest {
       return _handleError(e);
     }
   }
+  Future<ResponseComm> post(
+    String path, {
+    dynamic queryParameters,
+  }) async {
+    try {
+      final params = _convertToMap(queryParameters);
+      final response = await _dio.post(
+        path,
+        data: params,
+      );
+      return _handleResponse(response);
+    } catch (e) {
+      return _handleError(e);
+    }
+  }
 
 
   Map<String, dynamic>? _convertToMap(dynamic data) {

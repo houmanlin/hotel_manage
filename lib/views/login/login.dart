@@ -1,6 +1,10 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hotel_manage/api/model/account/account.dart';
+import 'package:hotel_manage/api/model/comm/response_comm.dart';
 import 'package:hotel_manage/util/system_params.dart';
+import 'package:hotel_manage/util/utils.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,12 +18,36 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _PhoneValidCodeController =
       TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-
+  void _sendSMSCode() {
+    AccountApi.sendSmsCode(
+      SendSmsCodeParams(mobile: _PhoneController.text, scene: 1),
+    );
   }
 
+  void _loginAccount() async {
+    ResponseComm response = await AccountApi.validSmsCode(
+      SendSmsCodeParams(
+        mobile: _PhoneController.text,
+        scene: 1,
+        code: _PhoneValidCodeController.text,
+      ),
+    );
+
+    if (response.Code != 0) {
+      BotToast.showText(text: response.Msg);
+      return;
+    }
+    AccountApi.loginAccount(
+      SendSmsCodeParams(
+        mobile: _PhoneController.text,
+        scene: 1,
+        code: _PhoneValidCodeController.text,
+        socialState: getPseudoUuid(),
+        socialCode:"",
+        socialType:"",
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +64,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 40),
               decoration: BoxDecoration(
+                color: Colors.red,
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -56,7 +85,6 @@ class _LoginPageState extends State<LoginPage> {
                     margin: EdgeInsets.symmetric(vertical: 20),
                     child: TextField(
                       controller: _PhoneController,
-                      autofocus: true,
                       decoration: InputDecoration(
                         hintText: '请输入电话号',
                         hintStyle: TextStyle(
@@ -89,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                       Expanded(
                         child: TextField(
                           controller: _PhoneValidCodeController,
-                          onTap: (){},
+                          onTap: () {},
                           decoration: InputDecoration(
                             hintText: '请输入验证码',
                             hintStyle: TextStyle(
@@ -123,12 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () {
-                          print(_PhoneController.text);
-                          AccountApi.sendSmsCode(
-                            SendSmsCodeParams(mobile: _PhoneController.text, scene: 1)
-                          );
-                        },
+                        onPressed: _sendSMSCode,
                         style: OutlinedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
@@ -141,9 +164,25 @@ class _LoginPageState extends State<LoginPage> {
                   Container(
                     width: double.infinity,
                     margin: EdgeInsets.only(top: 100, bottom: 150),
-                    child: ElevatedButton(onPressed: () {}, child: Text("登录")),
+                    child: ElevatedButton(
+                      onPressed: _loginAccount,
+                      child: Text("登录"),
+                    ),
                   ),
                 ],
+              ),
+            ),
+          ),
+          Positioned(
+            left: 0,
+            top: 40,
+            child: GestureDetector(
+              onTap: () {
+                context.pop();
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Icon(Icons.keyboard_arrow_left, size: 30),
               ),
             ),
           ),

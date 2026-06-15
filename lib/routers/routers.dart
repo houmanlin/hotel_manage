@@ -17,7 +17,7 @@ class AppRoutes {
   static const String aiDialog = '/aiDialog';
   static const String hotelList = '/hotel_list';
   static const String hotelRoomList = '/hotel_room_list';
-  static const String hotelInfo = '/hotelInfo';
+  static const String hotelInfo = '/hotel_info';
   static const String bookInfo = '/book_info';
 
   final GoRouter routes = GoRouter(
@@ -27,42 +27,49 @@ class AppRoutes {
     routes: <RouteBase>[
       GoRoute(
         path: home,
+        name: home,
         builder: (BuildContext context, GoRouterState state) {
           return SkeletonPage();
         },
       ),
       GoRoute(
         path: loginPage,
+        name: loginPage,
         builder: (BuildContext context, GoRouterState state) {
           return LoginPage();
         },
       ),
       GoRoute(
         path: aiDialog,
+        name: aiDialog,
         builder: (BuildContext context, GoRouterState state) {
           return AiDialog();
         },
       ),
       GoRoute(
         path: hotelList,
+        name: hotelList,
         builder: (BuildContext context, GoRouterState state) {
           return HotelListPage();
         },
       ),
       GoRoute(
         path: hotelRoomList,
+        name: hotelRoomList,
         builder: (BuildContext context, GoRouterState state) {
           return HotelRoomListPage();
         },
       ),
       GoRoute(
         path: hotelInfo,
+        name: hotelInfo,
         builder: (BuildContext context, GoRouterState state) {
           return HotelInfoPage();
         },
       ),
       GoRoute(
         path: bookInfo,
+        name: bookInfo,
         builder: (BuildContext context, GoRouterState state) {
           return BookInfoPage();
         },

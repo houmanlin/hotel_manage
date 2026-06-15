@@ -21,6 +21,7 @@ class _HotelRoomListPageState extends State<HotelRoomListPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    print("didChangeDependencies");
     final args =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     if (args != null) {
@@ -80,93 +81,100 @@ class _HotelRoomListPageState extends State<HotelRoomListPage> {
   Widget _buildHotelList() {
     return Column(
       children: List.generate(_storeData.length, (index) {
-        return Container(
-          margin: EdgeInsets.only(bottom: 10),
-          padding: EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: colorWhite,
-            borderRadius: BorderRadius.circular(containerRadian),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 80,
-                height: 80,
-                margin: EdgeInsets.only(right: 12),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(containerSmallRadian),
+        return GestureDetector(
+          onTap: (){
+            context.push(AppRoutes.hotelInfo);
+          },
+          child: Container(
+            margin: EdgeInsets.only(bottom: 10),
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: colorWhite,
+              borderRadius: BorderRadius.circular(containerRadian),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  margin: EdgeInsets.only(right: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(containerSmallRadian),
+                  ),
+                  child: _storeData[index].imageUrls == ""
+                      ? Center(child: Icon(Icons.now_wallpaper))
+                      : Image.network(
+                          _storeData[index].imageUrls,
+                          fit: BoxFit.cover,
+                        ),
                 ),
-                child: Image.network(
-                  _storeData[index].imageUrls,
-                  fit: BoxFit.cover,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _storeData[index].name,
+                        style: TextStyle(
+                          fontSize: textTitleSize,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        _storeData[index].remark,
+                        style: TextStyle(
+                          fontSize: textSize,
+                          color: Colors.grey[500],
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Text(
+                            _storeData[index].basePrice.toString(),
+                            style: TextStyle(
+                              fontSize: textTitleSize,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red[500],
+                            ),
+                          ),
+                          Text(
+                            '起',
+                            style: TextStyle(
+                              fontSize: textSmallSize,
+                              color: Colors.grey[500],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _storeData[index].name,
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      context.push(AppRoutes.bookInfo);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(containerCircle),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: Text(
+                      "订",
                       style: TextStyle(
                         fontSize: textTitleSize,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      _storeData[index].remark,
-                      style: TextStyle(
-                        fontSize: textSize,
-                        color: Colors.grey[500],
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Text(
-                          _storeData[index].basePrice.toString(),
-                          style: TextStyle(
-                            fontSize: textTitleSize,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red[500],
-                          ),
-                        ),
-                        Text(
-                          '起',
-                          style: TextStyle(
-                            fontSize: textSmallSize,
-                            color: Colors.grey[500],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    context.push(AppRoutes.bookInfo);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(containerCircle),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: Text(
-                    "订",
-                    style: TextStyle(
-                      fontSize: textTitleSize,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       }),
