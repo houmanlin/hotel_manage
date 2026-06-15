@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hotel_manage/util/system_params.dart';
 class CheckInInfoComponent extends StatefulWidget{
-  final int roomCount;
+
   final String guestName;
   final String phoneNumber;
   final String arrivalTime;
@@ -13,7 +13,6 @@ class CheckInInfoComponent extends StatefulWidget{
 
   const CheckInInfoComponent({
     super.key,
-    this.roomCount = 1,
     required this.guestName,
     required this.phoneNumber,
     required this.arrivalTime,
@@ -31,6 +30,11 @@ class CheckInInfoComponent extends StatefulWidget{
 
 class _CheckInInfoState extends State<CheckInInfoComponent> {
 
+  final TextEditingController _phoneController = TextEditingController();
+  final List<TextEditingController> _customerControl = [TextEditingController()];
+  int _roomCount = 1;
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -43,14 +47,18 @@ class _CheckInInfoState extends State<CheckInInfoComponent> {
       child: Column(
         children: [
           _buildHeader(),
-          _buildInfoRow(
-            label: '住客姓名',
-            value: widget.guestName,
-            hintText: "每间填1位住客姓名",
-            icon: Icons.verified_user_outlined,
-            onTap: widget.onGuestNameEdit,
+          ...List.generate(_customerControl.length, (index)=>
+            _buildInfoRow(
+              controller: _customerControl[index],
+              label: '住客姓名',
+              value: widget.guestName,
+              hintText: "每间填1位住客姓名",
+              icon: Icons.verified_user_outlined,
+              onTap: widget.onGuestNameEdit,
+            )
           ),
           _buildInfoRow(
+            controller: _phoneController,
             label: '联系手机',
             value: '+86 $widget.phoneNumber',
             hintText: "用于接收通知短信",
@@ -84,22 +92,34 @@ class _CheckInInfoState extends State<CheckInInfoComponent> {
     return Row(
       children: [
         IconButton(
-          onPressed: widget.roomCount > 1 ? widget.onRoomCountDecrease : null,
+          onPressed: (){
+            if (_roomCount > 1 ){
+              setState(() {
+                _roomCount--;
+              });
+            }
+
+          },
           icon: Icon(
             Icons.remove_circle_outline,
-            color: widget.roomCount > 1 ? Colors.grey : Colors.grey[300],
+            color: _roomCount > 1 ? Colors.grey : Colors.grey[300],
             size: 24,
           ),
           constraints: BoxConstraints(minWidth: 32, minHeight: 32),
         ),
         SizedBox(width: 8),
         Text(
-          widget.roomCount.toString() + '间',
+          '$_roomCount间',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         SizedBox(width: 8),
         IconButton(
-          onPressed: widget.onRoomCountIncrease,
+          onPressed: (){
+            _customerControl.add(TextEditingController());
+            setState(() {
+              _roomCount++;
+            });
+          },
           icon: Icon(Icons.add_circle_outline, color: Colors.blue, size: 24),
           constraints: BoxConstraints(minWidth: 32, minHeight: 32),
         ),
@@ -108,6 +128,7 @@ class _CheckInInfoState extends State<CheckInInfoComponent> {
   }
 
   Widget _buildInfoRow({
+    required TextEditingController controller,
     required String label,
     required String value,
     required String hintText,
@@ -120,6 +141,7 @@ class _CheckInInfoState extends State<CheckInInfoComponent> {
         SizedBox(width: 5),
         Expanded(
           child: TextField(
+            controller: controller,
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle: TextStyle(fontSize: textSize, color: Colors.grey[400]),
@@ -134,7 +156,6 @@ class _CheckInInfoState extends State<CheckInInfoComponent> {
             style: TextStyle(fontSize: textSize),
           ),
         ),
-        Icon(icon, color: Colors.grey[400], size: 20)
       ],
     );
   }

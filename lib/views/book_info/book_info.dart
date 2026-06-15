@@ -26,7 +26,6 @@ class BookInfoPage extends StatelessWidget {
               },
             ),
             CheckInInfoComponent(
-              roomCount: 1,
               guestName: "",
               phoneNumber: "0",
               arrivalTime: "0",
@@ -45,7 +44,7 @@ class BookInfoPage extends StatelessWidget {
               onArrivalTimeEdit: (){
 
               },
-            )
+            ),
           ],
         ),
       ),

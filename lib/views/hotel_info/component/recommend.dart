@@ -68,7 +68,7 @@ class RecommendList extends StatelessWidget {
                 tagText: _hotelList[index].TagText,
                 tagColor: Colors.orange,
                 extraInfo: _hotelList[index].ExtraInfo,
-                onTap: () => context.push("/hotelInfo"),
+                onTap: () => context.push("/hotel_info"),
               ),
             ),
           ),

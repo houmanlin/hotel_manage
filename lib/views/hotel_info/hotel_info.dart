@@ -6,8 +6,62 @@ import 'component/hotel_info_header.dart';
 import 'component/room_list.dart';
 import 'component/review_list.dart';
 
-class HotelInfoPage extends StatelessWidget {
+class HotelInfoPage extends StatefulWidget {
   const HotelInfoPage({super.key});
+
+  @override
+  State<HotelInfoPage> createState() => _HotelInfoPageState();
+
+}
+class _HotelInfoPageState extends State<HotelInfoPage> {
+
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args =
+    ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (args != null) {
+      storeId = args['store_id'];
+      _getStoreData();
+    }
+  }
+
+  Future<void> _getStoreData() async {
+    // TODO: implement initState
+    ResponseComm ResponseData = await StoreRoomTypeApi.getStoreRoomTypeList(
+      StoreRoomTypeParams(
+        status: 1,
+        storeId: storeId,
+        pageNo: 1,
+        pageSize: 100,
+        id: '',
+        name: '',
+        code: '',
+      ),
+    );
+
+    if (ResponseData.Code == 0) {
+      PageResponseComm<StoreRoomType> responseData = PageResponseComm.fromJson(
+        ResponseData.Data,
+        StoreRoomType.fromJson,
+      );
+
+      List<StoreRoomType> res = responseData.Data.map((item) {
+        item.imageUrls = getFirstImageUrl(item.imageUrls) == null
+            ? ""
+            : getFirstImageUrl(item.imageUrls) as String;
+        return item;
+      }).toList();
+
+      setState(() {
+        _storeData = res;
+      });
+    } else {
+      print(ResponseData.Msg);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {

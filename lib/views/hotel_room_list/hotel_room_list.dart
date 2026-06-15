@@ -21,7 +21,6 @@ class _HotelRoomListPageState extends State<HotelRoomListPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    print("didChangeDependencies");
     final args =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     if (args != null) {
