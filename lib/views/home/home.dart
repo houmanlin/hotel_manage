@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hotel_manage/api/model/withdrawCard/withdrawCard.dart';
 import 'package:hotel_manage/components/app_home_bar.dart';
 import 'package:hotel_manage/routers/index.dart';
@@ -19,7 +20,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   void _incrementCounter() {
-    Navigator.push(context, CustomPageRoute(routeName: AppRoutes.aiDialog));
+    context.go(AppRoutes.aiDialog);
+
   }
 
   @override

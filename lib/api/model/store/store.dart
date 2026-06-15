@@ -46,7 +46,8 @@ class StoreParams {
       'pageSize': pageSize,
     };
   }
-}class Store {
+}
+class Store {
   final String id;
   final String? deptId;
   final String name;

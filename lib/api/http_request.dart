@@ -1,5 +1,7 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:hotel_manage/api/model/comm/response_comm.dart';
+import 'package:hotel_manage/routers/index.dart';
 
 abstract class JsonConvertible {
   Map<String, dynamic> toJson();
@@ -11,7 +13,7 @@ class HttpRequest {
 
   late Dio _dio;
   String _baseUrl = 'http://192.168.1.10:48080/app-api/';
-  String? _token = '44ca02384acf40dca2c6ca88fc2eafb4';
+  String? _token = '';
 
   HttpRequest._internal() {
     _initDio();
@@ -100,6 +102,16 @@ class HttpRequest {
     if (response.statusCode != null &&
         response.statusCode! >= 200 &&
         response.statusCode! < 300) {
+
+        if(response.data['code'] == 401){
+          BotToast.showText(text: response.data['msg']);
+          AppRoutes.goLogin(navigatorKey.currentContext!);
+          return ResponseComm(
+            Code: response.data['code'],
+            Msg: response.data['msg'],
+            Data: response.data['data'],
+          );
+        }
         return ResponseComm(
           Code: response.data['code'],
           Msg: response.data['msg'],
@@ -139,7 +151,7 @@ class HttpRequest {
       statusCode = 30003;
       message = '请求发生错误: $error';
     }
-
+    BotToast.showText(text: message);
     return ResponseComm(Code: statusCode, Msg: message, Data: null);
   }
 

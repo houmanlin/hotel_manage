@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hotel_manage/components/app_home_bar.dart';
 import 'package:hotel_manage/util/system_params.dart';
 
@@ -102,9 +103,9 @@ class _HotelListPageState extends State<HotelListPage> {
     return Column(
       children: List.generate(_storeData.length, (index) {
         return GestureDetector(
-          onTap: (){
-            Navigator.pushNamed(context, AppRoutes.hotelRoomList, arguments: {
-              "store_id": _storeData[index].id
+          onTap: () {
+            context.pushNamed(AppRoutes.hotelRoomList, queryParameters: {
+              "store_id": _storeData[index].id,
             });
           },
           child: Container(

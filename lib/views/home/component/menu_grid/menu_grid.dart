@@ -1,5 +1,6 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hotel_manage/util/system_params.dart';
 
 class MenuItem {
@@ -58,7 +59,7 @@ class MenuGrid extends StatelessWidget {
           var cancel = BotToast.showText(text:"xxxx");  //popup a text toast;
           return;
         }
-        Navigator.pushNamed(context, item.url!);
+        context.push(item.url!);
       },
       child: Container(
         height: 10,

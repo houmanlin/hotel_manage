@@ -30,10 +30,7 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           GestureDetector(
             child: SizedBox(width: 60, height:40,child: Icon(Icons.support_agent),),
             onTap: (){
-              Navigator.push(
-                context,
-                CustomPageRoute(routeName: AppRoutes.aiDialog),
-              );
+
             },
           ),
         ],

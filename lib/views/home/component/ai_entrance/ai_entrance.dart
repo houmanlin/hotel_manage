@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hotel_manage/routers/index.dart';
 import 'package:hotel_manage/util/system_params.dart';
 
@@ -44,10 +45,7 @@ class AiEntrance extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    CustomPageRoute(routeName: AppRoutes.aiDialog),
-                  );
+                  context.push(AppRoutes.aiDialog);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,

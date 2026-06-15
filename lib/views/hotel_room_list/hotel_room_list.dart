@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hotel_manage/api/model/store_room_type/store_room_type.dart';
 import 'package:hotel_manage/components/app_home_bar.dart';
 import 'package:hotel_manage/routers/routers.dart';
@@ -146,7 +147,7 @@ class _HotelRoomListPageState extends State<HotelRoomListPage> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.BookInfo);
+                    context.push(AppRoutes.bookInfo);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,

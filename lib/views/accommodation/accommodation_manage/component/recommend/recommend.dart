@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hotel_manage/api/model/hotel/hotel.dart';
 import 'package:hotel_manage/components/hotel_card.dart';
 import 'package:hotel_manage/util/system_params.dart';
@@ -67,7 +68,7 @@ class RecommendList extends StatelessWidget {
                 tagText: _hotelList[index].TagText,
                 tagColor: Colors.orange,
                 extraInfo: _hotelList[index].ExtraInfo,
-                onTap: () => Navigator.pushNamed(context, "/hotelInfo"),
+                onTap: () => context.push("/hotelInfo"),
               ),
             ),
           ),
