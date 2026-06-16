@@ -16,6 +16,7 @@ class HotelRoomListPage extends StatefulWidget {
 }
 
 class _HotelRoomListPageState extends State<HotelRoomListPage> {
+  bool _initFlag = true;
   late String storeId;
 
   List<StoreRoomType> _storeData = [];
@@ -23,12 +24,16 @@ class _HotelRoomListPageState extends State<HotelRoomListPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    if (args != null) {
-      storeId = args['store_id'];
-      _getStoreData();
+    if (_initFlag){
+      final args =
+      ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      if (args != null) {
+        storeId = args['store_id'];
+        _getStoreData();
+      }
     }
+    _initFlag = false;
+
   }
 
   Future<void> _getStoreData() async {

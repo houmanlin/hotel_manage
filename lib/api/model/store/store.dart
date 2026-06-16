@@ -88,7 +88,7 @@ class Store {
       startBusinessTime: json['startBusinessTime'] as String?,
       endBusinessTime: json['endBusinessTime'] as String?,
       status: json['status'] as int?,
-      // basePrice: json['basePrice'] as String,
+      basePrice: json['basePrice'] as String,
       remark: json['remark'] as String?,
       imageUrls: json['imageUrls'] as String,
       createTime: json['createTime'] as String?,

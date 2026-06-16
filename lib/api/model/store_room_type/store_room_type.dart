@@ -6,8 +6,8 @@ class StoreRoomType {
   final String? storeId;
   final String name;
   final String code;
-  final String? area;
-  final String? bedType;
+  final String area;
+  final String bedType;
   final int? maxGuestCount;
   final String? basePrice;      // 元，支持小数
   final String? depositAmount;  // 元，支持小数
@@ -23,8 +23,8 @@ class StoreRoomType {
     this.storeId,
     required this.name,
     required this.code,
-    this.area,
-    this.bedType,
+    required this.area,
+    required this.bedType,
     this.maxGuestCount,
     this.basePrice,
     this.depositAmount,
@@ -42,8 +42,8 @@ class StoreRoomType {
       storeId: json['storeId'] as String?,
       name: json['name'] as String,
       code: json['code'] as String,
-      area: json['area'] as String?,
-      bedType: json['bedType'] as String?,
+      area: json['area'] as String,
+      bedType: json['bedType'] == null ? "" : json['bedType'] as String,
       maxGuestCount: json['maxGuestCount'] as int?,
       basePrice: (json['basePrice']),
       depositAmount: (json['depositAmount']),
@@ -218,6 +218,13 @@ class StoreRoomTypeApi {
     final response = await HttpRequest.instance.get(
       'hotel/room-type/page',
       queryParameters: queryParam.toJson(),
+    );
+    return response;
+  }
+  static Future<ResponseComm> getStoreRoomTypeInfo(String Id) async {
+    final response = await HttpRequest.instance.get(
+      'hotel/room-type/get',
+      queryParameters: {"id": Id},
     );
     return response;
   }

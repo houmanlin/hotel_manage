@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hotel_manage/api/model/comm/response_comm.dart';
-import 'package:hotel_manage/api/model/store/store.dart';
 import 'package:hotel_manage/api/model/store_room_type/store_room_type.dart';
 import 'package:hotel_manage/util/utils.dart';
 import 'package:hotel_manage/views/accommodation/accommodation_order/component/recommend/recommend.dart';
@@ -18,7 +17,8 @@ class HotelInfoPage extends StatefulWidget {
 
 }
 class _HotelInfoPageState extends State<HotelInfoPage> {
-  Store _storeData = Store(id: "", name: "", code: "", basePrice: "", address: "", imageUrls: "");
+  bool _initFlag = true;
+  StoreRoomType _storeData = StoreRoomType(id: "", name: "", code: "", basePrice: "", imageUrls: "", remark: '', bedType: '', area: '');
   List<StoreRoomType> _roomTypeList = [];
   String _room_id = "";
 
@@ -28,21 +28,25 @@ class _HotelInfoPageState extends State<HotelInfoPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final args =
-    ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    if (args != null) {
-      _room_id = args['room_id'];
-      _getStoreData();
-      _getRoomTypeList();
+    if (_initFlag){
+      final args =
+      ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      if (args != null) {
+        _room_id = args['room_id'];
+        _getStoreData();
+        _getRoomTypeList();
+      }
     }
+    _initFlag = false;
+
   }
 
   Future<void> _getStoreData() async {
 // TODO: implement initState
-    ResponseComm ResponseData = await StoreApi.getStoreInfo(_room_id);
+    ResponseComm ResponseData = await StoreRoomTypeApi.getStoreRoomTypeInfo(_room_id);
 
     if (ResponseData.Code == 0) {
-      Store res = Store.fromJson(ResponseData.Data);
+      StoreRoomType res = StoreRoomType.fromJson(ResponseData.Data);
 
       setState(() {
         _storeData = res;
@@ -98,14 +102,9 @@ class _HotelInfoPageState extends State<HotelInfoPage> {
             title: _storeData.name,
           ),
           HotelInfoHeader(
-            hotelName:  _storeData.name,
-            rankText: null,
-            consumerCount: null,
-            tags: [],
-            rating: 4.8,
-            reviewCount: 326,
-            address: '越城区解放大道158号天信大厦2幢',
-            nearbyInfo: '距你直线70米 · 近凤林地铁站',
+            hotelName: _storeData.name,
+            tags: [_storeData.bedType,"可住宿${_storeData.maxGuestCount}人", _storeData.name, "${_storeData.area}m²"],
+            basePrice: _storeData.basePrice.toString(),
             isFavorite: false,
             onFavoriteTap: () {},
             onMapTap: () {},
