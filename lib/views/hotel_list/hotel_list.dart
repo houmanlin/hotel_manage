@@ -6,6 +6,7 @@ import 'package:hotel_manage/util/system_params.dart';
 import 'package:hotel_manage/api/model/store/store.dart';
 import 'package:hotel_manage/api/model/comm/response_comm.dart';
 import 'package:hotel_manage/routers/routers.dart';
+import 'package:hotel_manage/util/utils.dart';
 import 'component/hotel_filter/hotel_filter.dart';
 
 class HotelListPage extends StatefulWidget {
@@ -49,8 +50,15 @@ class _HotelListPageState extends State<HotelListPage> {
         Store.fromJson,
       );
 
+      List<Store> res = responseData.Data.map((item) {
+        item.imageUrls = getFirstImageUrl(item.imageUrls) == null
+            ? ""
+            : getFirstImageUrl(item.imageUrls) as String;
+        return item;
+      }).toList();
+
       setState(() {
-        _storeData = responseData.Data;
+        _storeData = res;
       });
     } else {
       print(ResponseData.Msg);

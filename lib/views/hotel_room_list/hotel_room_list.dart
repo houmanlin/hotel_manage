@@ -9,6 +9,8 @@ import 'package:hotel_manage/api/model/comm/response_comm.dart';
 import '../../util/utils.dart';
 
 class HotelRoomListPage extends StatefulWidget {
+  const HotelRoomListPage({super.key});
+
   @override
   State<HotelRoomListPage> createState() => _HotelRoomListPageState();
 }
@@ -82,7 +84,9 @@ class _HotelRoomListPageState extends State<HotelRoomListPage> {
       children: List.generate(_storeData.length, (index) {
         return GestureDetector(
           onTap: (){
-            context.push(AppRoutes.hotelInfo);
+            context.pushNamed(AppRoutes.hotelInfo, queryParameters: {
+              "room_id": _storeData[index].id
+            });
           },
           child: Container(
             margin: EdgeInsets.only(bottom: 10),

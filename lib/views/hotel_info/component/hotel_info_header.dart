@@ -41,7 +41,8 @@ class HotelInfoHeader extends StatelessWidget {
           const SizedBox(height: 12),
           _buildRankTags(),
           const SizedBox(height: 12),
-          _buildTagsRow(),
+          if (tags.isNotEmpty)
+            _buildTagsRow(),
           const SizedBox(height: 16),
           _buildInfoRow(),
         ],

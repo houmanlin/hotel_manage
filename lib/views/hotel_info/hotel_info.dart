@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hotel_manage/api/model/comm/response_comm.dart';
+import 'package:hotel_manage/api/model/store/store.dart';
 import 'package:hotel_manage/api/model/store_room_type/store_room_type.dart';
 import 'package:hotel_manage/util/utils.dart';
 import 'package:hotel_manage/views/accommodation/accommodation_order/component/recommend/recommend.dart';
@@ -17,8 +18,12 @@ class HotelInfoPage extends StatefulWidget {
 
 }
 class _HotelInfoPageState extends State<HotelInfoPage> {
-  _storeData
-  String _storeId = "";
+  Store _storeData = Store(id: "", name: "", code: "", basePrice: "", address: "", imageUrls: "");
+  List<StoreRoomType> _roomTypeList = [];
+  String _room_id = "";
+
+
+  List<String> _bannerList = [];
 
   @override
   void didChangeDependencies() {
@@ -26,17 +31,32 @@ class _HotelInfoPageState extends State<HotelInfoPage> {
     final args =
     ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     if (args != null) {
-      _storeId = args['store_id'];
+      _room_id = args['room_id'];
       _getStoreData();
+      _getRoomTypeList();
     }
   }
 
   Future<void> _getStoreData() async {
-    // TODO: implement initState
+// TODO: implement initState
+    ResponseComm ResponseData = await StoreApi.getStoreInfo(_room_id);
+
+    if (ResponseData.Code == 0) {
+      Store res = Store.fromJson(ResponseData.Data);
+
+      setState(() {
+        _storeData = res;
+        _bannerList = res.imageUrls.split(",");
+      });
+    } else {
+      print(ResponseData.Msg);
+    }
+  }
+  Future<void> _getRoomTypeList() async {
     ResponseComm ResponseData = await StoreRoomTypeApi.getStoreRoomTypeList(
       StoreRoomTypeParams(
         status: 1,
-        storeId: _storeId,
+        storeId: _room_id,
         pageNo: 1,
         pageSize: 100,
         id: '',
@@ -59,7 +79,7 @@ class _HotelInfoPageState extends State<HotelInfoPage> {
       }).toList();
 
       setState(() {
-        _storeData = res;
+        _roomTypeList = res;
       });
     } else {
       print(ResponseData.Msg);
@@ -73,21 +93,15 @@ class _HotelInfoPageState extends State<HotelInfoPage> {
       body: ListView(
         children: [
           ImageCarousel(
-            images: [
-              "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&q=80",
-              "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&q=80",
-              "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&q=80",
-              "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&q=80",
-              "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&q=80",
-            ],
+            images: _bannerList,
             imageLabels: ['封面', '外观', '房间', '餐厅', '休闲', '公'],
-            title: '温度源酒店',
+            title: _storeData.name,
           ),
           HotelInfoHeader(
-            hotelName: '绍兴温度源酒店(奥体中心市政府店)',
-            rankText: '绍兴市豪华酒店好评榜第1名',
-            consumerCount: '消费人数1千+',
-            tags: ['豪华型', '2025开业', '健身房', '儿童乐园', '接站服务', '会议厅', '茶室', '设施'],
+            hotelName:  _storeData.name,
+            rankText: null,
+            consumerCount: null,
+            tags: [],
             rating: 4.8,
             reviewCount: 326,
             address: '越城区解放大道158号天信大厦2幢',

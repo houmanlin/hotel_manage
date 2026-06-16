@@ -57,9 +57,9 @@ class Store {
   final String? startBusinessTime;
   final String? endBusinessTime;
   final int? status;
-  final String basePrice;
+  final String? basePrice;
   final String? remark;
-  final String imageUrls;      // 注意：这里是单张图片的字符串，虽然键名带 s
+  String imageUrls;      // 注意：这里是单张图片的字符串，虽然键名带 s
   final String? createTime;
 
   Store({
@@ -67,7 +67,7 @@ class Store {
     this.deptId,
     required this.name,
     required this.code,
-    required this.basePrice,
+    this.basePrice,
     this.phone,
     required this.address,
     this.startBusinessTime,
@@ -81,7 +81,6 @@ class Store {
   factory Store.fromJson(dynamic json) {
     return Store(
       id: json['id'] as String,
-      deptId: json['deptId'] as String?,
       name: json['name'] as String,
       code: json['code'] as String,
       phone: json['phone'] as String?,
@@ -89,7 +88,7 @@ class Store {
       startBusinessTime: json['startBusinessTime'] as String?,
       endBusinessTime: json['endBusinessTime'] as String?,
       status: json['status'] as int?,
-      basePrice: json['basePrice'] as String,
+      // basePrice: json['basePrice'] as String,
       remark: json['remark'] as String?,
       imageUrls: json['imageUrls'] as String,
       createTime: json['createTime'] as String?,
@@ -119,6 +118,14 @@ class StoreApi {
     final response = await HttpRequest.instance.get(
       'hotel/store/page',
       queryParameters: queryParam.toJson(),
+    );
+    return response;
+  }
+
+  static Future<ResponseComm> getStoreInfo(String Id) async {
+    final response = await HttpRequest.instance.get(
+      'hotel/store/get',
+      queryParameters: {"id": Id},
     );
     return response;
   }
