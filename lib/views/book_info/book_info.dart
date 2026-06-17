@@ -4,6 +4,11 @@ import 'package:hotel_manage/views/book_info/component/check_in_info_component.d
 import './component/book_info_component.dart';
 
 class BookInfoPage extends StatelessWidget {
+
+  const BookInfoPage({super.key});
+
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

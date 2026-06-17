@@ -9,6 +9,7 @@ abstract class JsonConvertible {
 
 class HttpRequest {
   static final HttpRequest _instance = HttpRequest._internal();
+
   static HttpRequest get instance => _instance;
 
   late Dio _dio;
@@ -44,7 +45,8 @@ class HttpRequest {
       onError: (error, handler) {
         print('错误: ${error.message}');
         if (error.response != null) {
-          print('错误响应: ${error.response!.statusCode} ${error.response!.data}');
+          print('错误响应: ${error.response!.statusCode} ${error.response!
+              .data}');
         }
         handler.next(error);
       },
@@ -68,8 +70,7 @@ class HttpRequest {
     _dio.options.headers.addAll(headers);
   }
 
-  Future<ResponseComm> get(
-    String path, {
+  Future<ResponseComm> get(String path, {
     dynamic queryParameters,
   }) async {
     try {
@@ -83,8 +84,8 @@ class HttpRequest {
       return _handleError(e);
     }
   }
-  Future<ResponseComm> post(
-    String path, {
+
+  Future<ResponseComm> post(String path, {
     dynamic queryParameters,
   }) async {
     try {
@@ -117,21 +118,20 @@ class HttpRequest {
     if (response.statusCode != null &&
         response.statusCode! >= 200 &&
         response.statusCode! < 300) {
-
-        if(response.data['code'] == 401){
-          BotToast.showText(text: response.data['msg']);
-          AppRoutes.goLogin(navigatorKey.currentContext!);
-          return ResponseComm(
-            Code: response.data['code'],
-            Msg: response.data['msg'],
-            Data: response.data['data'],
-          );
-        }
+      if (response.data['code'] == 401) {
+        BotToast.showText(text: response.data['msg']);
+        AppRoutes.goLogin(navigatorKey.currentContext!);
         return ResponseComm(
           Code: response.data['code'],
           Msg: response.data['msg'],
           Data: response.data['data'],
         );
+      }
+      return ResponseComm(
+        Code: response.data['code'],
+        Msg: response.data['msg'],
+        Data: response.data['data'],
+      );
     } else {
       return ResponseComm(
         Code: response.statusCode ?? -1,

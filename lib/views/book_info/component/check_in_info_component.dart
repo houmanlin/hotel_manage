@@ -94,6 +94,7 @@ class _CheckInInfoState extends State<CheckInInfoComponent> {
         IconButton(
           onPressed: (){
             if (_roomCount > 1 ){
+              _customerControl.removeAt(_customerControl.length - 1);
               setState(() {
                 _roomCount--;
               });

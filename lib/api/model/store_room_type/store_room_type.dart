@@ -195,10 +195,7 @@ class StoreRoomTypeParams {
 
   Map<String, dynamic> toJson() {
     return {
-      if (id != null) 'id': id,
       if (storeId != null) 'storeId': storeId,
-      if (name != null) 'name': name,
-      if (code != null) 'code': code,
       if (area != null) 'area': area,
       if (bedType != null) 'bedType': bedType,
       if (maxGuestCount != null) 'maxGuestCount': maxGuestCount,
@@ -207,6 +204,9 @@ class StoreRoomTypeParams {
       if (imageUrls != null) 'imageUrls': imageUrls,
       if (status != null) 'status': status,
       if (sort != null) 'sort': sort,
+      'id': id,
+      'name': name,
+      'code': code,
       'pageNo': pageNo,
       'pageSize': pageSize,
     };

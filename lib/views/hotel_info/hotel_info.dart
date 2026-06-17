@@ -293,7 +293,9 @@ class _HotelInfoPageState extends State<HotelInfoPage> {
                         foregroundColor: Colors.white,
                       ),
                       onPressed: () {
-                        context.push(AppRoutes.bookInfo);
+                        context.pushNamed(AppRoutes.bookInfo,queryParameters: {
+                          "room_id": _storeData.id
+                        });
                       },
                       child: Text("立即订房"),
                     ),
@@ -385,7 +387,9 @@ class _HotelInfoPageState extends State<HotelInfoPage> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      context.push(AppRoutes.bookInfo);
+                      context.pushNamed(AppRoutes.bookInfo,queryParameters: {
+                        "room_id": _roomTypeList[index].id
+                      });
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,

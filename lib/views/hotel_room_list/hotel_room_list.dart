@@ -162,7 +162,9 @@ class _HotelRoomListPageState extends State<HotelRoomListPage> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      context.push(AppRoutes.bookInfo);
+                      context.pushNamed(AppRoutes.bookInfo,queryParameters: {
+                        "room_id": _storeData[index].id
+                      });
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,

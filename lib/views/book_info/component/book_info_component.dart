@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hotel_manage/api/model/store_room_type/store_room_type.dart';
+import 'package:hotel_manage/util/select_time_range.dart';
+import 'package:intl/intl.dart';
 import 'package:hotel_manage/util/system_params.dart';
 
-class BookInfoComponent extends StatelessWidget {
+class BookInfoComponent extends StatefulWidget {
   final String checkInDate;
   final String checkOutDate;
   final String roomType;
@@ -20,6 +23,48 @@ class BookInfoComponent extends StatelessWidget {
     this.onRoomDetailTap,
     this.onBookingReadTap,
   });
+
+  @override
+  State<StatefulWidget> createState() => _BookInfoComponentState();
+}
+
+class _BookInfoComponentState extends State<BookInfoComponent> {
+  bool _initFlag = true;
+  String _roomId = "";
+  String _checkInDate = "";
+  String _checkOutDate = "";
+  int _nightNum = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkInDate = DateFormat(
+      "MM月dd日",
+    ).format(selectTimeRangeSingle.getSelectStartTime());
+    _checkOutDate = DateFormat(
+      "MM月dd日",
+    ).format(selectTimeRangeSingle.getSelectEndTime());
+    _nightNum = selectTimeRangeSingle.getCountNight();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_initFlag){
+      final args =
+      ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      if (args != null) {
+        _roomId = args['room_id'];
+        _getRoomTypeInfo();
+      }
+    }
+    _initFlag = false;
+
+  }
+
+  Future<void> _getRoomTypeInfo() async {
+    StoreRoomTypeApi.getStoreRoomTypeInfo(_roomId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,16 +92,21 @@ class BookInfoComponent extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                _buildDateItem(checkInDate, '今天', true),
-                Container(width: 10, height: 1, color: Colors.grey, margin: EdgeInsets.symmetric(horizontal: 10)),
-                _buildDateItem(checkOutDate, '明天', false),
+                _buildDateItem(_checkInDate, '今天', true),
+                Container(
+                  width: 10,
+                  height: 1,
+                  color: Colors.grey,
+                  margin: EdgeInsets.symmetric(horizontal: 10),
+                ),
+                _buildDateItem(_checkOutDate, '明天', false),
                 _nightText(),
               ],
             ),
           ),
 
           TextButton(
-            onPressed: onRoomDetailTap,
+            onPressed: widget.onRoomDetailTap,
             child: Row(
               children: [
                 Text(
@@ -102,7 +152,7 @@ class BookInfoComponent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            roomType,
+            widget.roomType,
             style: TextStyle(
               fontSize: textTitleSize,
               fontWeight: FontWeight.bold,
@@ -111,7 +161,7 @@ class BookInfoComponent extends StatelessWidget {
           ),
           SizedBox(height: 8),
           Text(
-            roomDetails,
+            widget.roomDetails,
             style: TextStyle(fontSize: textSize, color: Colors.grey[600]),
           ),
         ],
@@ -121,13 +171,14 @@ class BookInfoComponent extends StatelessWidget {
 
   Widget _nightText() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 13, vertical: 2),margin: EdgeInsets.only(left: 10),
+      padding: EdgeInsets.symmetric(horizontal: 13, vertical: 2),
+      margin: EdgeInsets.only(left: 10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(containerBigRadian),
         border: BoxBorder.all(width: 1, color: backgroundColor as Color),
       ),
-      child: Text('1晚', style: TextStyle(fontSize: textSize)),
+      child: Text('$_nightNum晚', style: TextStyle(fontSize: textSize)),
     );
   }
 
@@ -138,12 +189,12 @@ class BookInfoComponent extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              cancelPolicy,
+              widget.cancelPolicy,
               style: TextStyle(fontSize: 14, color: Colors.green),
             ),
           ),
           TextButton(
-            onPressed: onBookingReadTap,
+            onPressed: widget.onBookingReadTap,
             child: Row(
               children: [
                 Text(
