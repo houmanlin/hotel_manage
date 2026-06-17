@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_manage/components/app_home_bar.dart';
+import 'package:hotel_manage/util/select_time_range.dart';
 import 'package:hotel_manage/util/system_params.dart';
 
 import 'package:hotel_manage/api/model/store/store.dart';
@@ -16,13 +17,15 @@ class HotelListPage extends StatefulWidget {
 
 class _HotelListPageState extends State<HotelListPage> {
   List<Store> _storeData = [];
-  String _checkInDate = '05月20日 周二';
-  String _checkOutDate = '05月21日 周三';
+  late DateTime _checkInDate;
+  late DateTime _checkOutDate;
 
   @override
   void initState() {
     super.initState();
     _getStoreData();
+    _checkInDate = selectTimeRangeSingle.getSelectStartTime();
+    _checkOutDate = selectTimeRangeSingle.getSelectEndTime();
   }
 
   Future<void> _getStoreData() async {

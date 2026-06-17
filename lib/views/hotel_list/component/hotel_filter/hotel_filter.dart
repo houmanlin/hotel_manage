@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hotel_manage/components/select_time.dart';
 import 'package:hotel_manage/util/system_params.dart';
+import 'package:intl/intl.dart';
 
-class HotelFilter extends StatelessWidget {
-  final String checkInDate;
-  final String checkOutDate;
+class HotelFilter extends StatefulWidget {
+  final DateTime checkInDate;
+  final DateTime checkOutDate;
   final String? hotelName;
   final String? roomType;
   final void Function()? onSearch;
+  final void Function(String, String)? onDateChanged;
 
   const HotelFilter({
     super.key,
@@ -15,11 +18,140 @@ class HotelFilter extends StatelessWidget {
     this.hotelName,
     this.roomType,
     this.onSearch,
+    this.onDateChanged,
   });
 
-  onCheckOutTap() {}
+  @override
+  State<HotelFilter> createState() => _HotelFilterState();
+}
 
-  onCheckInTap() {}
+class _HotelFilterState extends State<HotelFilter> {
+  List<DateTime?> _selectedDates = [];
+  String _checkInDate = "";
+  String _checkOutDate = "";
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _checkInDate = DateFormat("MM月dd日").format(widget.checkInDate);
+    _checkOutDate = DateFormat("MM月dd日").format(widget.checkOutDate);
+  }
+
+  void _showDatePicker() {
+    _selectedDates = [
+      widget.checkInDate,
+      widget.checkOutDate,
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildDatePickerHeader(),
+              SizedBox(
+                height: 400,
+                child: SelectTimeRang(),
+              ),
+              _buildDatePickerFooter(),
+            ],
+          ),
+        );
+      },
+    );
+  }
+  String _formatDate(DateTime? date) {
+    if (date == null) return '';
+    final weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    return '${weekdays[date.weekday % 7]}';
+  }
+
+  Widget _buildDatePickerHeader() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Color.fromRGBO(245, 245, 245, 1)),
+        ),
+      ),
+      child: Row(
+        children: const [
+          Text(
+            '选择日期',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Spacer(),
+          Text('共${0}晚', style: TextStyle(fontSize: 14, color: Colors.grey)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDatePickerFooter() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: const BoxDecoration(
+        border: Border(
+          top: BorderSide(color: Color.fromRGBO(245, 245, 245, 1)),
+        ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey[100],
+                foregroundColor: Colors.black87,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(containerCircle),
+                ),
+                elevation: 0,
+              ),
+              child: const Text('取消'),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: _selectedDates.length >= 2
+                  ? () {
+                      Navigator.pop(context);
+                      if (widget.onDateChanged != null) {
+                        widget.onDateChanged!(
+                          _formatDate(_selectedDates[0]),
+                          _formatDate(_selectedDates[1]),
+                        );
+                      }
+                    }
+                  : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(containerCircle),
+                ),
+                elevation: 0,
+              ),
+              child: const Text('确定'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +165,7 @@ class HotelFilter extends StatelessWidget {
           BoxShadow(
             color: Colors.grey.shade100,
             blurRadius: 2,
-            offset: Offset(0, 1),
+            offset: const Offset(0, 1),
           ),
         ],
       ),
@@ -50,37 +182,37 @@ class HotelFilter extends StatelessWidget {
   }
 
   Widget _buildDateRow() {
-    return Row(
-      children: [
-        Expanded(
-          child: GestureDetector(
-            onTap: onCheckInTap,
+    return GestureDetector(
+      onTap: _showDatePicker,
+      child: Row(
+        children: [
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   '入住日期',
                   style: TextStyle(
-                    fontSize: textSmallSize,
+                    fontSize: textSize,
                     color: Colors.grey[500],
                   ),
                 ),
                 SizedBox(height: 4),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      checkInDate.split(' ')[0],
+                      _checkInDate,
                       style: TextStyle(
                         fontSize: textTitleSize,
                         fontWeight: FontWeight.bold,
-                        color: colorBlack,
                       ),
                     ),
                     SizedBox(width: 8),
                     Text(
-                      checkInDate.split(' ')[1],
+                      _formatDate(widget.checkInDate),
                       style: TextStyle(
-                        fontSize: textSize,
+                        fontSize: textSmallSize,
                         color: Colors.grey[500],
                       ),
                     ),
@@ -89,26 +221,23 @@ class HotelFilter extends StatelessWidget {
               ],
             ),
           ),
-        ),
-        Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            color: primaryColor,
-            borderRadius: BorderRadius.circular(containerCircle),
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: primaryColor,
+              borderRadius: BorderRadius.circular(containerCircle),
+            ),
+            child: Icon(Icons.swap_horiz, size: 16, color: Colors.white),
           ),
-          child: Icon(Icons.swap_horiz, size: 16, color: Colors.white),
-        ),
-        Expanded(
-          child: GestureDetector(
-            onTap: onCheckOutTap,
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
                   '离店日期',
                   style: TextStyle(
-                    fontSize: textSmallSize,
+                    fontSize: textSize,
                     color: Colors.grey[500],
                   ),
                 ),
@@ -117,19 +246,19 @@ class HotelFilter extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      checkOutDate.split(' ')[1],
+                      _checkOutDate,
                       style: TextStyle(
-                        fontSize: textSize,
-                        color: Colors.grey[500],
+                        fontSize: textTitleSize,
+
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     SizedBox(width: 8),
                     Text(
-                      checkOutDate.split(' ')[0],
+                      _formatDate(widget.checkOutDate),
                       style: TextStyle(
-                        fontSize: textTitleSize,
-                        fontWeight: FontWeight.bold,
-                        color: colorBlack,
+                        fontSize: textSmallSize,
+                        color: Colors.grey[500],
                       ),
                     ),
                   ],
@@ -137,8 +266,8 @@ class HotelFilter extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -161,7 +290,10 @@ class HotelFilter extends StatelessWidget {
               borderRadius: BorderRadius.circular(containerSmallRadian),
               borderSide: BorderSide.none,
             ),
-            contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 12,
+              horizontal: 12,
+            ),
           ),
           style: TextStyle(fontSize: textSize),
         ),
@@ -176,7 +308,10 @@ class HotelFilter extends StatelessWidget {
               borderRadius: BorderRadius.circular(containerSmallRadian),
               borderSide: BorderSide.none,
             ),
-            contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 12,
+              horizontal: 12,
+            ),
           ),
           style: TextStyle(fontSize: textSize),
         ),
@@ -189,7 +324,7 @@ class HotelFilter extends StatelessWidget {
       width: double.infinity,
       height: 44,
       child: ElevatedButton(
-        onPressed: onSearch,
+        onPressed: widget.onSearch,
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryColor,
           shape: RoundedRectangleBorder(

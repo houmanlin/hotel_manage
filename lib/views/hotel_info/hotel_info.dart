@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hotel_manage/api/model/comm/response_comm.dart';
 import 'package:hotel_manage/api/model/store_room_type/store_room_type.dart';
+import 'package:hotel_manage/util/system_params.dart';
 import 'package:hotel_manage/util/utils.dart';
 import 'package:hotel_manage/views/accommodation/accommodation_order/component/recommend/recommend.dart';
 
@@ -14,23 +15,31 @@ class HotelInfoPage extends StatefulWidget {
 
   @override
   State<HotelInfoPage> createState() => _HotelInfoPageState();
-
 }
+
 class _HotelInfoPageState extends State<HotelInfoPage> {
   bool _initFlag = true;
-  StoreRoomType _storeData = StoreRoomType(id: "", name: "", code: "", basePrice: "", imageUrls: "", remark: '', bedType: '', area: '');
+  StoreRoomType _storeData = StoreRoomType(
+    id: "",
+    name: "",
+    code: "",
+    basePrice: "",
+    imageUrls: "",
+    remark: '',
+    bedType: '',
+    area: '',
+  );
   List<StoreRoomType> _roomTypeList = [];
   String _room_id = "";
-
 
   List<String> _bannerList = [];
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_initFlag){
+    if (_initFlag) {
       final args =
-      ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       if (args != null) {
         _room_id = args['room_id'];
         _getStoreData();
@@ -38,12 +47,13 @@ class _HotelInfoPageState extends State<HotelInfoPage> {
       }
     }
     _initFlag = false;
-
   }
 
   Future<void> _getStoreData() async {
-// TODO: implement initState
-    ResponseComm ResponseData = await StoreRoomTypeApi.getStoreRoomTypeInfo(_room_id);
+    // TODO: implement initState
+    ResponseComm ResponseData = await StoreRoomTypeApi.getStoreRoomTypeInfo(
+      _room_id,
+    );
 
     if (ResponseData.Code == 0) {
       StoreRoomType res = StoreRoomType.fromJson(ResponseData.Data);
@@ -56,6 +66,7 @@ class _HotelInfoPageState extends State<HotelInfoPage> {
       print(ResponseData.Msg);
     }
   }
+
   Future<void> _getRoomTypeList() async {
     ResponseComm ResponseData = await StoreRoomTypeApi.getStoreRoomTypeList(
       StoreRoomTypeParams(
@@ -90,7 +101,6 @@ class _HotelInfoPageState extends State<HotelInfoPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,15 +113,37 @@ class _HotelInfoPageState extends State<HotelInfoPage> {
           ),
           HotelInfoHeader(
             hotelName: _storeData.name,
-            tags: [_storeData.bedType,"可住宿${_storeData.maxGuestCount}人", _storeData.name, "${_storeData.area}m²"],
+            tags: [
+              _storeData.bedType,
+              "可住宿${_storeData.maxGuestCount}人",
+              _storeData.name,
+              "${_storeData.area}m²",
+            ],
             basePrice: _storeData.basePrice.toString(),
             isFavorite: false,
             onFavoriteTap: () {},
             onMapTap: () {},
           ),
-          RoomList(),
-          ReviewList(),
-          RecommendList(),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(containerRadian),
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              // padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "设备设施",
+                    style: TextStyle(
+                      fontSize: textTitleSize,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
