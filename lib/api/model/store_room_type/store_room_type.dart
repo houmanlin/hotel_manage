@@ -16,7 +16,7 @@ class StoreRoomType {
   final int? sort;
   final String remark;
   final String? createTime;     // 虽定义为 Record，实践中多为字符串
-  final List<Facility>? facilityDOS;
+  final List<Facility> facilityDOS;
 
   StoreRoomType({
     required this.id,
@@ -33,7 +33,7 @@ class StoreRoomType {
     this.sort,
     required this.remark,
     this.createTime,
-    this.facilityDOS,
+    required this.facilityDOS,
   });
 
   factory StoreRoomType.fromJson(dynamic json) {
@@ -56,7 +56,7 @@ class StoreRoomType {
           ? (json['facilityDOS'] as List<dynamic>)
           .map((e) => Facility.fromJson(e as Map<String, dynamic>))
           .toList()
-          : null,
+          : [],
     );
   }
 
@@ -76,7 +76,7 @@ class StoreRoomType {
       'sort': sort,
       'remark': remark,
       'createTime': createTime,
-      'facilityDOS': facilityDOS?.map((e) => e.toJson()).toList(),
+      'facilityDOS': facilityDOS.map((e) => e.toJson()).toList(),
     };
   }
 }
@@ -88,7 +88,7 @@ class Facility {
   final String? updater;
   final bool? deleted;
   final String? id;
-  final String? name;
+  final String name;
   final int? status;
 
   Facility({
@@ -98,7 +98,7 @@ class Facility {
     this.updater,
     this.deleted,
     this.id,
-    this.name,
+    required this.name,
     this.status,
   });
 
@@ -110,7 +110,7 @@ class Facility {
       updater: json['updater'] as String?,
       deleted: json['deleted'] as bool?,
       id: json['id'] as String?,
-      name: json['name'] as String?,
+      name: json['name'] as String,
       status: json['status'] as int?,
     );
   }

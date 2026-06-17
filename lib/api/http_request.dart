@@ -12,7 +12,7 @@ class HttpRequest {
   static HttpRequest get instance => _instance;
 
   late Dio _dio;
-  String _baseUrl = 'http://192.168.1.10:48080/app-api/';
+  String _baseUrl = 'https://hotel.yuyangyun.cn/app-api/';
   String? _token = '';
 
   HttpRequest._internal() {
