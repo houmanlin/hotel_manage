@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hotel_manage/api/model/comm/response_comm.dart';
 import 'package:hotel_manage/api/model/store_room_type/store_room_type.dart';
 import 'package:hotel_manage/util/select_time_range.dart';
 import 'package:intl/intl.dart';
@@ -35,6 +36,8 @@ class _BookInfoComponentState extends State<BookInfoComponent> {
   String _checkOutDate = "";
   int _nightNum = 1;
 
+  StoreRoomType _storeRoomType = StoreRoomType(id: "", name: "", code: "", area: "", bedType: "", imageUrls: "", remark: "", facilityDOS: []);
+
   @override
   void initState() {
     super.initState();
@@ -63,7 +66,10 @@ class _BookInfoComponentState extends State<BookInfoComponent> {
   }
 
   Future<void> _getRoomTypeInfo() async {
-    StoreRoomTypeApi.getStoreRoomTypeInfo(_roomId);
+    ResponseComm responseComm = await StoreRoomTypeApi.getStoreRoomTypeInfo(_roomId);
+    if (responseComm.Code == 0){
+      _storeRoomType = StoreRoomType.fromJson(responseComm.Data);
+    }
   }
 
   @override
@@ -152,7 +158,7 @@ class _BookInfoComponentState extends State<BookInfoComponent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            widget.roomType,
+            _storeRoomType.name,
             style: TextStyle(
               fontSize: textTitleSize,
               fontWeight: FontWeight.bold,
@@ -161,7 +167,8 @@ class _BookInfoComponentState extends State<BookInfoComponent> {
           ),
           SizedBox(height: 8),
           Text(
-            widget.roomDetails,
+            // "${_storeRoomType.bedType} | 可住${_storeRoomType.maxGuestCount}人 | ${_storeRoomType.name} | ${_storeRoomType.area}m² |",
+            "123",
             style: TextStyle(fontSize: textSize, color: Colors.grey[600]),
           ),
         ],

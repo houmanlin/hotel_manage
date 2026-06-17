@@ -137,7 +137,7 @@ class _HotelInfoPageState extends State<HotelInfoPage> {
                 hotelName: _storeData.name,
                 tags: [
                   _storeData.bedType,
-                  "可住宿${_storeData.maxGuestCount}人",
+                  "可住${_storeData.maxGuestCount}人",
                   _storeData.name,
                   "${_storeData.area}m²",
                 ],
