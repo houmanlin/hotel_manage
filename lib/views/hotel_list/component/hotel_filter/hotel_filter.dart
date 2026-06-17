@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:hotel_manage/components/select_time.dart';
+import 'package:hotel_manage/util/select_time_range.dart';
 import 'package:hotel_manage/util/system_params.dart';
 import 'package:intl/intl.dart';
 
 class HotelFilter extends StatefulWidget {
-  final DateTime checkInDate;
-  final DateTime checkOutDate;
+  DateTime checkInDate;
+  DateTime checkOutDate;
   final String? hotelName;
   final String? roomType;
   final void Function()? onSearch;
-  final void Function(String, String)? onDateChanged;
+  final void Function(DateTime, DateTime)? onDateChanged;
 
-  const HotelFilter({
+  HotelFilter({
     super.key,
     required this.checkInDate,
     required this.checkOutDate,
@@ -26,23 +27,19 @@ class HotelFilter extends StatefulWidget {
 }
 
 class _HotelFilterState extends State<HotelFilter> {
-  List<DateTime?> _selectedDates = [];
   String _checkInDate = "";
   String _checkOutDate = "";
+  int _countNight = 1;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _checkInDate = DateFormat("MM月dd日").format(widget.checkInDate);
-    _checkOutDate = DateFormat("MM月dd日").format(widget.checkOutDate);
+    _checkInDate = DateFormat("MM月dd日").format(selectTimeRangeSingle.getSelectStartTime());
+    _checkOutDate = DateFormat("MM月dd日").format(selectTimeRangeSingle.getSelectEndTime());
+    _countNight = selectTimeRangeSingle.getCountNight();
   }
 
   void _showDatePicker() {
-    _selectedDates = [
-      widget.checkInDate,
-      widget.checkOutDate,
-    ];
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -78,20 +75,20 @@ class _HotelFilterState extends State<HotelFilter> {
 
   Widget _buildDatePickerHeader() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: const BoxDecoration(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: Color.fromRGBO(245, 245, 245, 1)),
         ),
       ),
       child: Row(
-        children: const [
+        children: [
           Text(
             '选择日期',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           Spacer(),
-          Text('共${0}晚', style: TextStyle(fontSize: 14, color: Colors.grey)),
+          Text('共$_countNight晚', style: TextStyle(fontSize: 14, color: Colors.grey)),
         ],
       ),
     );
@@ -99,8 +96,8 @@ class _HotelFilterState extends State<HotelFilter> {
 
   Widget _buildDatePickerFooter() {
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
         border: Border(
           top: BorderSide(color: Color.fromRGBO(245, 245, 245, 1)),
         ),
@@ -120,23 +117,21 @@ class _HotelFilterState extends State<HotelFilter> {
                 ),
                 elevation: 0,
               ),
-              child: const Text('取消'),
+              child: Text('取消'),
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16),
           Expanded(
             child: ElevatedButton(
-              onPressed: _selectedDates.length >= 2
-                  ? () {
-                      Navigator.pop(context);
-                      if (widget.onDateChanged != null) {
-                        widget.onDateChanged!(
-                          _formatDate(_selectedDates[0]),
-                          _formatDate(_selectedDates[1]),
-                        );
-                      }
-                    }
-                  : null,
+              onPressed: () {
+                Navigator.pop(context);
+
+                setState(() {
+                  _checkInDate = DateFormat("MM月dd日").format(selectTimeRangeSingle.getSelectStartTime());
+                  _checkOutDate = DateFormat("MM月dd日").format(selectTimeRangeSingle.getSelectEndTime());
+                });
+
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,
                 foregroundColor: Colors.white,
@@ -145,7 +140,7 @@ class _HotelFilterState extends State<HotelFilter> {
                 ),
                 elevation: 0,
               ),
-              child: const Text('确定'),
+              child: Text('确定'),
             ),
           ),
         ],
@@ -165,7 +160,7 @@ class _HotelFilterState extends State<HotelFilter> {
           BoxShadow(
             color: Colors.grey.shade100,
             blurRadius: 2,
-            offset: const Offset(0, 1),
+            offset: Offset(0, 1),
           ),
         ],
       ),
@@ -249,7 +244,6 @@ class _HotelFilterState extends State<HotelFilter> {
                       _checkOutDate,
                       style: TextStyle(
                         fontSize: textTitleSize,
-
                         fontWeight: FontWeight.bold,
                       ),
                     ),

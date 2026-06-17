@@ -68,6 +68,12 @@ class _HotelListPageState extends State<HotelListPage> {
     }
   }
 
+  void _selectDateChanged(DateTime startTime, DateTime endTime){
+    setState(() {
+      _checkInDate = selectTimeRangeSingle.getSelectStartTime();
+      _checkOutDate = selectTimeRangeSingle.getSelectEndTime();
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,6 +101,7 @@ class _HotelListPageState extends State<HotelListPage> {
               onSearch: () {
                 _handleSearch();
               },
+                onDateChanged:_selectDateChanged
             ),
             SizedBox(height: 20),
             _buildHotelList(),

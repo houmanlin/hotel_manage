@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hotel_manage/util/select_time_range.dart';
 
 import '../util/system_params.dart';
+
 class SelectTimeRang extends StatefulWidget {
   const SelectTimeRang({super.key});
 
@@ -10,18 +11,28 @@ class SelectTimeRang extends StatefulWidget {
   State<SelectTimeRang> createState() => _SelectTimeState();
 }
 
-class _SelectTimeState extends State<SelectTimeRang>{
+class _SelectTimeState extends State<SelectTimeRang> {
   List<DateTime?> _selectedDates = [
     selectTimeRangeSingle.getSelectStartTime(),
     selectTimeRangeSingle.getSelectEndTime(),
   ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _selectedDates = [
+      selectTimeRangeSingle.getSelectStartTime(),
+      selectTimeRangeSingle.getSelectEndTime(),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return CalendarDatePicker2(
       config: CalendarDatePicker2Config(
         calendarViewMode: CalendarDatePicker2Mode.scroll,
         calendarType: CalendarDatePicker2Type.range,
-        selectedDayHighlightColor: primaryColor,
         weekdayLabelTextStyle: const TextStyle(
           color: Colors.black87,
           fontWeight: FontWeight.bold,
@@ -35,6 +46,11 @@ class _SelectTimeState extends State<SelectTimeRang>{
       ),
       value: _selectedDates,
       onValueChanged: (dates) {
+        if (dates.length >= 2) {
+          selectTimeRangeSingle.setSelectStartTime(dates[0]);
+          selectTimeRangeSingle.setSelectEndTime(dates[1]);
+          selectTimeRangeSingle.setCountNight();
+        }
         setState(() => _selectedDates = dates);
       },
     );

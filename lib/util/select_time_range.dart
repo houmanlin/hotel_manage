@@ -19,8 +19,12 @@ class SelectTimeRange {
     SelectEndTime = date;
   }
 
-  void setCountNight(int nightNum){
-    CountNight = nightNum;
+  void setCountNight(){
+    if(SelectStartTime.isAfter(SelectEndTime)){
+      return;
+    }
+    int nightNum = SelectEndTime.difference(SelectStartTime).inDays;
+    CountNight = nightNum > 0 ? nightNum : 0;
   }
 
 
