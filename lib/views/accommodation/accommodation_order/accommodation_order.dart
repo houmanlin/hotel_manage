@@ -1,10 +1,24 @@
 import 'package:flutter/cupertino.dart';
+import 'package:hotel_manage/api/model/order/order.dart';
 
 import 'component/order_item/order_item.dart';
 import 'component/lock_control_rule/lock_control_rule.dart';
 import 'component/reward_card/reward_card.dart';
 
-class AccommodationOrder extends StatelessWidget{
+class AccommodationOrder extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() => _AccommodationOrderState();
+
+}
+class _AccommodationOrderState extends State<AccommodationOrder>{
+  List<OrderData> _orderList = [OrderData()];
+
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _getData();
+  }
   @override
   Widget build(BuildContext context) {
     return  Container(
@@ -12,14 +26,16 @@ class AccommodationOrder extends StatelessWidget{
       child: ListView(
         children: [
           RewardCard(),
-          OrderItem(),
-          OrderItem(),
-          OrderItem(),
+          ...List.generate(_orderList.length, (item) => OrderItem()),
           LockControlRule(),
         ]
         ,
       ),
     );
+  }
+
+  void _getData() async{
+    OrderApi.getOrderList(OrderRequest(pageNo: 1, pageSize: 100));
   }
 
 }

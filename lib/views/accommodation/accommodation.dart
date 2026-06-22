@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hotel_manage/components/app_bar.dart';
 import 'package:hotel_manage/components/app_home_bar.dart';
-import 'package:hotel_manage/util/system_params.dart';
 
 import 'accommodation_manage/accommodation_manage.dart';
 import 'accommodation_order/accommodation_order.dart';

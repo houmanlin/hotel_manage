@@ -57,6 +57,7 @@ class MenuGrid extends StatelessWidget {
       onTap: (){
         if(item.url == ""){
           var cancel = BotToast.showText(text:"xxxx");  //popup a text toast;
+          print(cancel);
           return;
         }
         context.push(item.url!);

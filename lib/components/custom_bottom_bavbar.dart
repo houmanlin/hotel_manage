@@ -6,7 +6,7 @@ class CustomBottomNavBar extends StatefulWidget {
     super.key,
     required this.onCheckPage,
     this.currentIndex = 0,
-  }) : assert(onCheckPage != null, "onCheckPage回调必传");
+  });
 
   final void Function(int selectIndex) onCheckPage;
   int currentIndex;
