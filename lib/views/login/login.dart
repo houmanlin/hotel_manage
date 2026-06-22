@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_manage/api/model/account/account.dart';
 import 'package:hotel_manage/api/model/comm/response_comm.dart';
+import 'package:hotel_manage/util/shared_util.dart';
 import 'package:hotel_manage/util/system_params.dart';
 import 'package:hotel_manage/util/utils.dart';
+
+import '../../api/http_request.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -37,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
       BotToast.showText(text: response.Msg);
       return;
     }
-    AccountApi.loginAccount(
+    ResponseComm loginAccount = await AccountApi.loginAccount(
       SendSmsCodeParams(
         mobile: _PhoneController.text,
         scene: 1,
@@ -47,6 +50,13 @@ class _LoginPageState extends State<LoginPage> {
         socialType:"",
       ),
     );
+    await SharedUtil.clear();
+    if(loginAccount.Code == 0){
+      SharedUtil.saveData({
+        "token": loginAccount.Data["accessToken"],
+      });
+      context.replace("/");
+    }
   }
 
   @override

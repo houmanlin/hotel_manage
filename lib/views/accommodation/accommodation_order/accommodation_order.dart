@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:hotel_manage/api/model/comm/response_comm.dart';
 import 'package:hotel_manage/api/model/order/order.dart';
 
 import 'component/order_item/order_item.dart';
@@ -6,14 +7,14 @@ import 'component/lock_control_rule/lock_control_rule.dart';
 import 'component/reward_card/reward_card.dart';
 
 class AccommodationOrder extends StatefulWidget{
+  const AccommodationOrder({super.key});
+
   @override
   State<StatefulWidget> createState() => _AccommodationOrderState();
 
 }
 class _AccommodationOrderState extends State<AccommodationOrder>{
-  List<OrderData> _orderList = [OrderData()];
-
-
+  List<OrderData> _orderList = [];
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -35,7 +36,14 @@ class _AccommodationOrderState extends State<AccommodationOrder>{
   }
 
   void _getData() async{
-    OrderApi.getOrderList(OrderRequest(pageNo: 1, pageSize: 100));
+    ResponseComm data = await OrderApi.getOrderList(OrderRequest(pageNo: 1, pageSize: 100, sortingFields: []));
+    if(data.Code == 0){
+      PageResponseComm<OrderData> resolveData = PageResponseComm.fromJson(data.Data, OrderData.fromJson);
+      setState(() {
+        _orderList = resolveData.Data;
+      });
+      print(_orderList);
+    }
   }
 
 }

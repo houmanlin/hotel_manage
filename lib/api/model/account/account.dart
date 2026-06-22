@@ -59,7 +59,7 @@ class AccountApi {
 
   static Future<ResponseComm> loginAccount(SendSmsCodeParams queryParam) async {
     final response = await HttpRequest.instance.post(
-      'member/auth/validate-sms-code',
+      'member/auth/sms-login',
       queryParameters: queryParam.toJson(),
     );
     return response;

@@ -2,6 +2,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:hotel_manage/api/model/comm/response_comm.dart';
 import 'package:hotel_manage/routers/index.dart';
+import 'package:hotel_manage/util/shared_util.dart';
 
 abstract class JsonConvertible {
   Map<String, dynamic> toJson();
@@ -13,7 +14,7 @@ class HttpRequest {
   static HttpRequest get instance => _instance;
 
   late Dio _dio;
-  String _baseUrl = 'https://hotel.yuyangyun.cn/app-api/';
+  String _baseUrl = 'http://192.168.1.10:48080/app-api/';
   String? _token = '';
 
   HttpRequest._internal() {
@@ -33,7 +34,12 @@ class HttpRequest {
     ));
 
     _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
+      onRequest: (options, handler) async {
+        String? token = await SharedUtil.readData("token");
+
+        if(token != ""){
+          _token = token;
+        }
         if (_token != null) {
           options.headers['Authorization'] = _token;
         }
@@ -126,6 +132,9 @@ class HttpRequest {
           Msg: response.data['msg'],
           Data: response.data['data'],
         );
+      }
+      if (response.data['code'] != 0){
+        BotToast.showText(text: response.data['msg']);
       }
       return ResponseComm(
         Code: response.data['code'],

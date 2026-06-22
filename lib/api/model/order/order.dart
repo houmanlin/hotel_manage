@@ -22,7 +22,7 @@ class OrderRequest {
   final String? canceledTime;
   final String? version;
   final String? createTime;
-  final String? sortingFields;
+  final List<String> sortingFields;
   final int pageNo;
   final int pageSize;
   OrderRequest({
@@ -46,7 +46,7 @@ class OrderRequest {
     this.canceledTime = "",
     this.version = "",
     this.createTime = "",
-    this.sortingFields = "",
+    required this.sortingFields,
     this.pageNo = 1,
     this.pageSize = 20,
 });
@@ -73,7 +73,7 @@ class OrderRequest {
         canceledTime: json["canceledTime"] as String?,
         version: json["version"] as String?,
         createTime: json["createTime"] as String?,
-        sortingFields: json["sortingFields"] as String?,
+        sortingFields: json["sortingFields"] as List<String>,
         pageNo: json["pageNo"] as int,
         pageSize: json["pageSize"] as int,
     );
@@ -110,17 +110,17 @@ class OrderRequest {
 
 
 class OrderData {
-  final int? id;
-  final int? storeId;
+  final String? id;
+  final String? storeId;
   final String? orderNo;
   final int? source;
   final int? orderType;
-  final int? customerId;
+  final String? customerId;
   final String? contactName;
   final String? contactMobile;
   final int? status;
-  final Map<String, dynamic>? checkInDate;   // 或 String?，根据实际调整
-  final Map<String, dynamic>? checkOutDate;
+  final String? checkInDate;   // 或 String?，根据实际调整
+  final String? checkOutDate;
   final int? nightCount;
   final int? roomCount;
   final num? totalAmount;
@@ -128,9 +128,9 @@ class OrderData {
   final num? depositAmount;
   final String? remark;
   final String? cancelReason;
-  final Map<String, dynamic>? canceledTime;
+  final String? canceledTime;
   final int? version;
-  final Map<String, dynamic>? createTime;
+  final String? createTime;
   final CancelRequest? cancelRequest;
   final BillDO? billDO;
   final List<BillItemDO>? billItemDOList;
@@ -166,19 +166,19 @@ class OrderData {
     this.store,
   });
 
-  factory OrderData.fromJson(Map<String, dynamic> json) {
+  factory OrderData.fromJson(dynamic json) {
     return OrderData(
-      id: json['id'] as int?,
-      storeId: json['storeId'] as int?,
+      id: json['id'] as String?,
+      storeId: json['storeId'] as String?,
       orderNo: json['orderNo'] as String?,
       source: json['source'] as int?,
       orderType: json['orderType'] as int?,
-      customerId: json['customerId'] as int?,
+      customerId: json['customerId'] as String?,
       contactName: json['contactName'] as String?,
       contactMobile: json['contactMobile'] as String?,
       status: json['status'] as int?,
-      checkInDate: json['checkInDate'] as Map<String, dynamic>?,
-      checkOutDate: json['checkOutDate'] as Map<String, dynamic>?,
+      checkInDate: json['checkInDate'] as String?,
+      checkOutDate: json['checkOutDate'] as String?,
       nightCount: json['nightCount'] as int?,
       roomCount: json['roomCount'] as int?,
       totalAmount: json['totalAmount'] as num?,
@@ -186,9 +186,9 @@ class OrderData {
       depositAmount: json['depositAmount'] as num?,
       remark: json['remark'] as String?,
       cancelReason: json['cancelReason'] as String?,
-      canceledTime: json['canceledTime'] as Map<String, dynamic>?,
+      canceledTime: json['canceledTime'] as String?,
       version: json['version'] as int?,
-      createTime: json['createTime'] as Map<String, dynamic>?,
+      createTime: json['createTime'] as String?,
       cancelRequest: json['cancelRequest'] != null
           ? CancelRequest.fromJson(json['cancelRequest'] as Map<String, dynamic>)
           : null,
@@ -623,7 +623,7 @@ class Store {
 class OrderApi {
   static Future<ResponseComm> getOrderList(OrderRequest queryParam) async {
     final response = await HttpRequest.instance.get(
-      '/hotel/order/get',
+      '/hotel/order/page',
       queryParameters: queryParam.toJson(),
     );
     return response;
