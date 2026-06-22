@@ -9,6 +9,14 @@ packages:
       url: "https://mirrors.cloud.tencent.com/dart-pub/"
     source: hosted
     version: "2.13.1"
+  auto_shimmer_animate:
+    dependency: "direct main"
+    description:
+      name: auto_shimmer_animate
+      sha256: "1338101e48df3bc0f455735214f9c193220df91e1c6a9eba505b2a500bd011c9"
+      url: "https://mirrors.cloud.tencent.com/dart-pub/"
+    source: hosted
+    version: "0.2.1"
   boolean_selector:
     dependency: transitive
     description:

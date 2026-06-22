@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:auto_shimmer_animate/auto_shimmer_animate.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_manage/components/app_home_bar.dart';
@@ -16,9 +19,12 @@ class HotelListPage extends StatefulWidget {
 }
 
 class _HotelListPageState extends State<HotelListPage> {
-  List<Store> _storeData = [];
+  List<Store> _storeData = [
+    Store(id: "", name: "", code: "", address: "", imageUrls: ""),
+  ];
   late DateTime _checkInDate;
   late DateTime _checkOutDate;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -59,21 +65,22 @@ class _HotelListPageState extends State<HotelListPage> {
             : getFirstImageUrl(item.imageUrls) as String;
         return item;
       }).toList();
-
       setState(() {
         _storeData = res;
+        _isLoading = false;
       });
     } else {
       print(ResponseData.Msg);
     }
   }
 
-  void _selectDateChanged(DateTime startTime, DateTime endTime){
+  void _selectDateChanged(DateTime startTime, DateTime endTime) {
     setState(() {
       _checkInDate = selectTimeRangeSingle.getSelectStartTime();
       _checkOutDate = selectTimeRangeSingle.getSelectEndTime();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,7 +108,7 @@ class _HotelListPageState extends State<HotelListPage> {
               onSearch: () {
                 _handleSearch();
               },
-                onDateChanged:_selectDateChanged
+              onDateChanged: _selectDateChanged,
             ),
             SizedBox(height: 20),
             _buildHotelList(),
@@ -118,83 +125,100 @@ class _HotelListPageState extends State<HotelListPage> {
   }
 
   Widget _buildHotelList() {
-    return Column(
-      children: List.generate(_storeData.length, (index) {
-        return GestureDetector(
-          onTap: () {
-            context.pushNamed(AppRoutes.hotelRoomList, queryParameters: {
-              "store_id": _storeData[index].id,
-            });
-          },
-          child: Container(
-            margin: EdgeInsets.only(bottom: 10),
-            padding: EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: colorWhite,
-              borderRadius: BorderRadius.circular(containerRadian),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(containerSmallRadian),
+    print(_isLoading);
+    return AutoShimmerAnimate(
+      isLoading: _isLoading,
+      child: Column(
+        children: List.generate(_storeData.length, (index) {
+          return GestureDetector(
+            onTap: () {
+              context.pushNamed(
+                AppRoutes.hotelRoomList,
+                queryParameters: {"store_id": _storeData[index].id},
+              );
+            },
+            child: Container(
+              margin: EdgeInsets.only(bottom: 10),
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: colorWhite,
+                borderRadius: BorderRadius.circular(containerRadian),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(containerSmallRadian),
+                    ),
+                    child: Image.network(
+                      _storeData[index].imageUrls,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(Icons.image_not_supported);
+                      },
+                      loadingBuilder:
+                          (
+                            BuildContext context,
+                            Widget child,
+                            ImageChunkEvent? loadingProgress,
+                          ) {
+                            if (loadingProgress == null) return child;
+                            return Icon(Icons.image_not_supported);
+                          },
+                    ),
                   ),
-                  child: Image.network(
-                    _storeData[index].imageUrls,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _storeData[index].name,
-                        style: TextStyle(
-                          fontSize: textTitleSize,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        _storeData[index].address,
-                        style: TextStyle(
-                          fontSize: textSize,
-                          color: Colors.grey[500],
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Text(
-                            _storeData[index].basePrice.toString(),
-                            style: TextStyle(
-                              fontSize: textTitleSize,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red[500],
-                            ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _storeData[index].name,
+                          style: TextStyle(
+                            fontSize: textTitleSize,
+                            fontWeight: FontWeight.bold,
                           ),
-                          Text(
-                            '起',
-                            style: TextStyle(
-                              fontSize: textSmallSize,
-                              color: Colors.grey[500],
-                            ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          _storeData[index].address,
+                          style: TextStyle(
+                            fontSize: textSize,
+                            color: Colors.grey[500],
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Text(
+                              _storeData[index].basePrice.toString(),
+                              style: TextStyle(
+                                fontSize: textTitleSize,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red[500],
+                              ),
+                            ),
+                            Text(
+                              '起',
+                              style: TextStyle(
+                                fontSize: textSmallSize,
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 }

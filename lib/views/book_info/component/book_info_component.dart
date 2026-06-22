@@ -36,7 +36,16 @@ class _BookInfoComponentState extends State<BookInfoComponent> {
   String _checkOutDate = "";
   int _nightNum = 1;
 
-  StoreRoomType _storeRoomType = StoreRoomType(id: "", name: "", code: "", area: "", bedType: "", imageUrls: "", remark: "", facilityDOS: []);
+  StoreRoomType _storeRoomType = StoreRoomType(
+    id: "",
+    name: "",
+    code: "",
+    area: "",
+    bedType: "",
+    imageUrls: "",
+    remark: "",
+    facilityDOS: [],
+  );
 
   @override
   void initState() {
@@ -53,22 +62,25 @@ class _BookInfoComponentState extends State<BookInfoComponent> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_initFlag){
+    if (_initFlag) {
       final args =
-      ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       if (args != null) {
         _roomId = args['room_id'];
         _getRoomTypeInfo();
       }
     }
     _initFlag = false;
-
   }
 
   Future<void> _getRoomTypeInfo() async {
-    ResponseComm responseComm = await StoreRoomTypeApi.getStoreRoomTypeInfo(_roomId);
-    if (responseComm.Code == 0){
-      _storeRoomType = StoreRoomType.fromJson(responseComm.Data);
+    ResponseComm responseComm = await StoreRoomTypeApi.getStoreRoomTypeInfo(
+      _roomId,
+    );
+    if (responseComm.Code == 0) {
+      setState(() {
+        _storeRoomType = StoreRoomType.fromJson(responseComm.Data);
+      });
     }
   }
 
@@ -82,9 +94,9 @@ class _BookInfoComponentState extends State<BookInfoComponent> {
       ),
       child: Column(
         children: [
-          _buildDateSection(),
           _buildRoomInfoSection(),
           _buildActionButtons(),
+          _buildDateSection(),
         ],
       ),
     );
@@ -140,11 +152,6 @@ class _BookInfoComponentState extends State<BookInfoComponent> {
             color: isCheckIn ? primaryColor : Colors.black87,
           ),
         ),
-        SizedBox(width: 5),
-        Text(
-          label,
-          style: TextStyle(fontSize: textSize, color: Colors.grey),
-        ),
       ],
     );
   }
@@ -152,24 +159,27 @@ class _BookInfoComponentState extends State<BookInfoComponent> {
   Widget _buildRoomInfoSection() {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 8),
-
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      child: Row(
         children: [
-          Text(
-            _storeRoomType.name,
-            style: TextStyle(
-              fontSize: textTitleSize,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            // "${_storeRoomType.bedType} | 可住${_storeRoomType.maxGuestCount}人 | ${_storeRoomType.name} | ${_storeRoomType.area}m² |",
-            "123",
-            style: TextStyle(fontSize: textSize, color: Colors.grey[600]),
+          Image.asset(_storeRoomType.imageUrls[0]),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                _storeRoomType.name,
+                style: TextStyle(
+                  fontSize: textTitleSize,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                "${_storeRoomType.bedType} | 可住${_storeRoomType.maxGuestCount}人 | ${_storeRoomType.name} | ${_storeRoomType.area}m² |",
+                style: TextStyle(fontSize: textSize, color: Colors.grey[600]),
+              ),
+            ],
           ),
         ],
       ),
