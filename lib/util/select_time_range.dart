@@ -6,7 +6,7 @@ class SelectTimeRange {
   SelectTimeRange(){
     DateTime _dateTime = DateTime.now();
     SelectStartTime = _dateTime;
-    _dateTime.add(Duration(days: 1));
+    _dateTime = _dateTime.add(Duration(days: 1));
     SelectEndTime = _dateTime;
     CountNight = 1;
   }

@@ -27,7 +27,20 @@ class _AccommodationOrderState extends State<AccommodationOrder>{
       child: ListView(
         children: [
           RewardCard(),
-          ...List.generate(_orderList.length, (item) => OrderItem()),
+          ...List.generate(_orderList.length, (index) => OrderItem(
+            hotelName: _orderList[index].store!.name,
+            roomType: _orderList[index].orderRoomDO == null ? "" : _orderList[index].orderRoomDO!.roomTypeId.toString(),
+            totalPrice: _orderList[index].totalAmount,
+            address: "",
+            checkInDate: _orderList[index].checkInDate,
+            checkOutDate: _orderList[index].checkOutDate,
+            countNightNum: _orderList[index].nightCount,
+            landlordName: _orderList[index].store!.address,
+            onContactLandlord: (){
+              print("123");
+              print(_orderList[index].checkInDate);
+            },
+          )),
           LockControlRule(),
         ]
         ,
@@ -42,7 +55,6 @@ class _AccommodationOrderState extends State<AccommodationOrder>{
       setState(() {
         _orderList = resolveData.Data;
       });
-      print(_orderList);
     }
   }
 

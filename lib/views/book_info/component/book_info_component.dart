@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hotel_manage/api/model/comm/response_comm.dart';
 import 'package:hotel_manage/api/model/store_room_type/store_room_type.dart';
 import 'package:hotel_manage/util/select_time_range.dart';
+import 'package:hotel_manage/util/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:hotel_manage/util/system_params.dart';
 
@@ -35,6 +36,7 @@ class _BookInfoComponentState extends State<BookInfoComponent> {
   String _checkInDate = "";
   String _checkOutDate = "";
   int _nightNum = 1;
+  List<String> _imageUrls = [];
 
   StoreRoomType _storeRoomType = StoreRoomType(
     id: "",
@@ -78,8 +80,10 @@ class _BookInfoComponentState extends State<BookInfoComponent> {
       _roomId,
     );
     if (responseComm.Code == 0) {
+      StoreRoomType storeRoomType = StoreRoomType.fromJson(responseComm.Data);
+      _imageUrls = storeRoomType.imageUrls.split(",");
       setState(() {
-        _storeRoomType = StoreRoomType.fromJson(responseComm.Data);
+        _storeRoomType = storeRoomType;
       });
     }
   }
@@ -162,7 +166,41 @@ class _BookInfoComponentState extends State<BookInfoComponent> {
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       child: Row(
         children: [
-          Image.asset(_storeRoomType.imageUrls[0]),
+          Container(
+            margin: EdgeInsets.only(right: 10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(containerRadian)
+            ),
+            child: _imageUrls.isNotEmpty
+                ? Image.network(
+                    _imageUrls[0],
+                    width: 100,
+                    height: 80,
+                    fit: BoxFit.fill,
+                    loadingBuilder:
+                        (
+                          BuildContext context,
+                          Widget child,
+                          ImageChunkEvent? loadingProgress,
+                        ) {
+                          if (loadingProgress == null) return child;
+                          return _buildDefaultAvatar();
+                        },
+                    errorBuilder:
+                        (
+                          BuildContext context,
+                          Object error,
+                          StackTrace? stackTrace,
+                        ) {
+                          return _buildDefaultAvatar();
+                        },
+                  )
+                : SizedBox(
+                    width: 100,
+                    height: 80,
+                    child: _buildDefaultAvatar(),
+                  ),
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -183,6 +221,15 @@ class _BookInfoComponentState extends State<BookInfoComponent> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildDefaultAvatar() {
+    return Container(
+      width: 80,
+      height: 80,
+      color: Colors.grey[300],
+      child: Icon(Icons.person, color: Colors.grey[500], size: 60),
     );
   }
 

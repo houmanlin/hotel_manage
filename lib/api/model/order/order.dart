@@ -1,5 +1,6 @@
 import '../../http_request.dart';
 import '../comm/response_comm.dart';
+import '../store/store.dart';
 
 class OrderRequest {
   final String? storeId;
@@ -119,18 +120,18 @@ class OrderData {
   final String? contactName;
   final String? contactMobile;
   final int? status;
-  final String? checkInDate;   // 或 String?，根据实际调整
-  final String? checkOutDate;
-  final int? nightCount;
+  final String checkInDate;   // 或 String?，根据实际调整
+  final String checkOutDate;
+  final int nightCount;
   final int? roomCount;
-  final num? totalAmount;
-  final num? paidAmount;
-  final num? depositAmount;
+  final int? totalAmount;
+  final int? paidAmount;
+  final int? depositAmount;
   final String? remark;
   final String? cancelReason;
   final String? canceledTime;
   final int? version;
-  final String? createTime;
+  final int? createTime;
   final CancelRequest? cancelRequest;
   final BillDO? billDO;
   final List<BillItemDO>? billItemDOList;
@@ -147,9 +148,9 @@ class OrderData {
     this.contactName,
     this.contactMobile,
     this.status,
-    this.checkInDate,
-    this.checkOutDate,
-    this.nightCount,
+    required this.checkInDate,
+    required this.checkOutDate,
+    required this.nightCount,
     this.roomCount,
     this.totalAmount,
     this.paidAmount,
@@ -177,18 +178,18 @@ class OrderData {
       contactName: json['contactName'] as String?,
       contactMobile: json['contactMobile'] as String?,
       status: json['status'] as int?,
-      checkInDate: json['checkInDate'] as String?,
-      checkOutDate: json['checkOutDate'] as String?,
-      nightCount: json['nightCount'] as int?,
+      checkInDate: json['checkInDate'] == null ? "" : json['checkInDate'] as String,
+      checkOutDate: json['checkOutDate'] == null ? "" : json['checkOutDate'] as String,
+      nightCount: json['nightCount'] == null ? 1 : json['nightCount'] as int,
       roomCount: json['roomCount'] as int?,
-      totalAmount: json['totalAmount'] as num?,
-      paidAmount: json['paidAmount'] as num?,
-      depositAmount: json['depositAmount'] as num?,
+      totalAmount: json['totalAmount'] as int?,
+      paidAmount: json['paidAmount'] as int?,
+      depositAmount: json['depositAmount'] as int?,
       remark: json['remark'] as String?,
       cancelReason: json['cancelReason'] as String?,
       canceledTime: json['canceledTime'] as String?,
       version: json['version'] as int?,
-      createTime: json['createTime'] as String?,
+      createTime: json['createTime'] as int?,
       cancelRequest: json['cancelRequest'] != null
           ? CancelRequest.fromJson(json['cancelRequest'] as Map<String, dynamic>)
           : null,
@@ -298,15 +299,15 @@ class CancelRequest {
 
 // ============ 账单 ============
 class BillDO {
-  final Map<String, dynamic>? createTime;
-  final Map<String, dynamic>? updateTime;
+  final int? createTime;
+  final int? updateTime;
   final String? creator;
   final String? updater;
   final bool? deleted;
-  final int? id;
-  final int? storeId;
+  final String? id;
+  final String? storeId;
   final String? billNo;
-  final int? orderId;
+  final String? orderId;
   final int? status;
   final num? receivableAmount;
   final num? paidAmount;
@@ -336,15 +337,15 @@ class BillDO {
 
   factory BillDO.fromJson(Map<String, dynamic> json) {
     return BillDO(
-      createTime: json['createTime'] as Map<String, dynamic>?,
-      updateTime: json['updateTime'] as Map<String, dynamic>?,
+      createTime: json['createTime'] as int?,
+      updateTime: json['updateTime'] as int?,
       creator: json['creator'] as String?,
       updater: json['updater'] as String?,
       deleted: json['deleted'] as bool?,
-      id: json['id'] as int?,
-      storeId: json['storeId'] as int?,
+      id: json['id'] as String?,
+      storeId: json['storeId'] as String?,
       billNo: json['billNo'] as String?,
-      orderId: json['orderId'] as int?,
+      orderId: json['orderId'] as String?,
       status: json['status'] as int?,
       receivableAmount: json['receivableAmount'] as num?,
       paidAmount: json['paidAmount'] as num?,
@@ -379,20 +380,20 @@ class BillDO {
 
 // ============ 账单明细 ============
 class BillItemDO {
-  final Map<String, dynamic>? createTime;
-  final Map<String, dynamic>? updateTime;
+  final int? createTime;
+  final int? updateTime;
   final String? creator;
   final String? updater;
   final bool? deleted;
-  final int? id;
-  final int? storeId;
-  final int? billId;
-  final int? orderId;
+  final String? id;
+  final String? storeId;
+  final String? billId;
+  final String? orderId;
   final int? itemType;
   final String? itemName;
   final num? amount;
   final num? quantity;
-  final Map<String, dynamic>? bizDate;
+  final List<dynamic>? bizDate;
   final String? remark;
 
   BillItemDO({
@@ -415,20 +416,20 @@ class BillItemDO {
 
   factory BillItemDO.fromJson(Map<String, dynamic> json) {
     return BillItemDO(
-      createTime: json['createTime'] as Map<String, dynamic>?,
-      updateTime: json['updateTime'] as Map<String, dynamic>?,
+      createTime: json['createTime'] as int?,
+      updateTime: json['updateTime'] as int?,
       creator: json['creator'] as String?,
       updater: json['updater'] as String?,
       deleted: json['deleted'] as bool?,
-      id: json['id'] as int?,
-      storeId: json['storeId'] as int?,
-      billId: json['billId'] as int?,
-      orderId: json['orderId'] as int?,
+      id: json['id'] as String?,
+      storeId: json['storeId'] as String?,
+      billId: json['billId'] as String?,
+      orderId: json['orderId'] as String?,
       itemType: json['itemType'] as int?,
       itemName: json['itemName'] as String?,
       amount: json['amount'] as num?,
       quantity: json['quantity'] as num?,
-      bizDate: json['bizDate'] as Map<String, dynamic>?,
+      bizDate: json['bizDate'] as List<dynamic>?,
       remark: json['remark'] as String?,
     );
   }
@@ -535,87 +536,6 @@ class OrderRoomDO {
       'status': status,
       'actualCheckInTime': actualCheckInTime,
       'actualCheckOutTime': actualCheckOutTime,
-    };
-  }
-}
-
-// ============ 门店信息 ============
-class Store {
-  final Map<String, dynamic>? createTime;
-  final Map<String, dynamic>? updateTime;
-  final String? creator;
-  final String? updater;
-  final bool? deleted;
-  final int? id;
-  final int? deptId;
-  final String? name;
-  final String? code;
-  final String? phone;
-  final String? address;
-  final String? startBusinessTime; // 如果是HH:mm格式，保留String
-  final String? endBusinessTime;
-  final int? status;
-  final String? remark;
-  final String? imageUrls;
-
-  Store({
-    this.createTime,
-    this.updateTime,
-    this.creator,
-    this.updater,
-    this.deleted,
-    this.id,
-    this.deptId,
-    this.name,
-    this.code,
-    this.phone,
-    this.address,
-    this.startBusinessTime,
-    this.endBusinessTime,
-    this.status,
-    this.remark,
-    this.imageUrls,
-  });
-
-  factory Store.fromJson(Map<String, dynamic> json) {
-    return Store(
-      createTime: json['createTime'] as Map<String, dynamic>?,
-      updateTime: json['updateTime'] as Map<String, dynamic>?,
-      creator: json['creator'] as String?,
-      updater: json['updater'] as String?,
-      deleted: json['deleted'] as bool?,
-      id: json['id'] as int?,
-      deptId: json['deptId'] as int?,
-      name: json['name'] as String?,
-      code: json['code'] as String?,
-      phone: json['phone'] as String?,
-      address: json['address'] as String?,
-      startBusinessTime: json['startBusinessTime'] as String?,
-      endBusinessTime: json['endBusinessTime'] as String?,
-      status: json['status'] as int?,
-      remark: json['remark'] as String?,
-      imageUrls: json['imageUrls'] as String?,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'createTime': createTime,
-      'updateTime': updateTime,
-      'creator': creator,
-      'updater': updater,
-      'deleted': deleted,
-      'id': id,
-      'deptId': deptId,
-      'name': name,
-      'code': code,
-      'phone': phone,
-      'address': address,
-      'startBusinessTime': startBusinessTime,
-      'endBusinessTime': endBusinessTime,
-      'status': status,
-      'remark': remark,
-      'imageUrls': imageUrls,
     };
   }
 }

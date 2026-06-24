@@ -60,7 +60,7 @@ class Store {
   final String? basePrice;
   final String? remark;
   String imageUrls;      // 注意：这里是单张图片的字符串，虽然键名带 s
-  final String? createTime;
+  final dynamic createTime;
 
   Store({
     required this.id,
@@ -88,7 +88,7 @@ class Store {
       startBusinessTime: json['startBusinessTime'] as String?,
       endBusinessTime: json['endBusinessTime'] as String?,
       status: json['status'] as int?,
-      basePrice: json['basePrice'] as String,
+      basePrice: json['basePrice'] as String?,
       remark: json['remark'] as String?,
       imageUrls: json['imageUrls'] as String,
       createTime: json['createTime'] as String?,

@@ -39,6 +39,7 @@ class HttpRequest {
 
         if(token != ""){
           _token = token;
+          print(token);
         }
         if (_token != null) {
           options.headers['Authorization'] = _token;

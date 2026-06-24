@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:hotel_manage/util/system_params.dart';
 
 class LockControl extends StatelessWidget {
-  final String title;
-  final String roomNumber;
+  final String hotelName;
+  final String roomNo;
   final String address;
-  final String validPeriod;
+  final String checkInDate;
+  final String checkOutDate;
   final int unlockCount;
   final int shareCount;
   final int permissionCount;
@@ -17,10 +18,11 @@ class LockControl extends StatelessWidget {
 
   const LockControl({
     super.key,
-    this.title = '大理洱海景觀民宿',
-    this.roomNumber = '302',
+    this.hotelName = '大理洱海景觀民宿',
+    this.roomNo = '302',
     this.address = '大理市古城区人民路123号',
-    this.validPeriod = '2026-05-06 至 2026-05-10',
+    this.checkInDate = '',
+    this.checkOutDate = '',
     this.unlockCount = 8,
     this.shareCount = 0,
     this.permissionCount = 0,
@@ -64,7 +66,7 @@ class LockControl extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            title,
+            hotelName,
             style: TextStyle(
               fontSize: textTitleSize,
               fontWeight: FontWeight.bold,
@@ -78,7 +80,7 @@ class LockControl extends StatelessWidget {
               borderRadius: BorderRadius.circular(containerSmallRadian),
             ),
             child: Text(
-              roomNumber,
+              roomNo,
               style: TextStyle(
                 fontSize: textSmallSize,
                 color: colorBlack,
@@ -97,7 +99,7 @@ class LockControl extends StatelessWidget {
         children: [
           _buildInfoRow(Icons.location_on, address),
           SizedBox(height: 8),
-          _buildInfoRow(Icons.calendar_today, validPeriod),
+          _buildInfoRow(Icons.calendar_today, '$checkInDate 至 $checkOutDate'),
         ],
       ),
     );

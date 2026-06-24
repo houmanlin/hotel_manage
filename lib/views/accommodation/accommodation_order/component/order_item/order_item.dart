@@ -4,12 +4,12 @@ import 'package:hotel_manage/util/system_params.dart';
 class OrderItem extends StatelessWidget {
   final String hotelName;
   final String roomType;
-  final double totalPrice;
+  final int? totalPrice;
   final String address;
   final String checkInDate;
+  final int countNightNum;
   final String checkOutDate;
   final String landlordName;
-  final double rating;
   final String? landlordAvatar;
   final VoidCallback? onContactLandlord;
   final VoidCallback? onCancelOrder;
@@ -23,9 +23,9 @@ class OrderItem extends StatelessWidget {
     this.totalPrice = 540,
     this.address = '丽江市古城区五一街789号',
     this.checkInDate = '2026-05-15',
+    this.countNightNum = 0,
     this.checkOutDate = '2026-05-18',
     this.landlordName = '王老板',
-    this.rating = 4.7,
     this.landlordAvatar,
     this.onContactLandlord,
     this.onCancelOrder,
@@ -187,7 +187,7 @@ class OrderItem extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    '3晚',
+                    '$countNightNum晚',
                     style: TextStyle(
                       fontSize: textSize,
                       fontWeight: FontWeight.w500,
@@ -264,20 +264,6 @@ class OrderItem extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                     color: colorBlack,
                   ),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Icon(Icons.star, size: 14, color: Colors.amber[500]),
-                    const SizedBox(width: 2),
-                    Text(
-                      '$rating 分',
-                      style: TextStyle(
-                        fontSize: textSize,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
